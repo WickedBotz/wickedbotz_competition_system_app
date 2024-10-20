@@ -1,6 +1,9 @@
 import 'dart:convert';
+import 'package:app_jurados/pages/stores/user_store.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../data/http/http_client.dart';
+import '../data/repository/user_repository.dart';
 import '../themes/app_theme.dart';
 import '../widgets/gradient_button_widget.dart';
 import 'package:http/http.dart' as http;
@@ -125,16 +128,15 @@ class _LoginPageState extends State<LoginPage> {
                   onPressed: () async {
                     print("Botão pressionado");
                     if (form_key.currentState!.validate()) {
+
                       bool loginSuccess = await loginSuccessfully();
                       if (loginSuccess) {
-                        print('Login OK');
                         Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
                               builder: (context) => const CompetitionsPage()),
                         );
                       } else {
-                        print('Erro de Login');
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
                             content: Text('Erro ao fazer login'),
@@ -156,38 +158,50 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<bool> loginSuccessfully() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    print('loginSuccessfully called');
+    HttpClient client = HttpClient();
 
-    var url = Uri.parse('http://10.0.2.2:5000/login');
-    print(url);
+    final UserStore store = UserStore(repository: UserRepository(client: client));
+    await store.loginRequest(username: email_controller.text, password: password_controller.text);
 
-    var response = await http.post(
-      url,
-      headers: {
-        'Content-Type': 'application/json',  // Define o cabeçalho como JSON
-      },
-      body: jsonEncode({
-        'username': email_controller.text,
-        'password': password_controller.text
-      }),
-    );
-
-    if (response.statusCode == 200) {
-      try {
-        var jsonResponse = jsonDecode(response.body);
-
-        String token = jsonResponse['token'];
-        await sharedPreferences.setString('auth_token', token);
-
-        return true;
-      } catch (e) {
-        print('Erro ao decodificar JSON: $e');
-        return false;
-      }
-    } else {
-      print('Erro: ${response.statusCode}');
+    if (store.error.value.isNotEmpty || store.state.value == null) {
+      print('Login Error ${store.error.value}');
       return false;
     }
+    else {
+      return true;
+    }
+
+
+
+    // var url = Uri.parse('http://10.0.2.2:5000/login');
+    //
+    // var response = await http.post(
+    //   url,
+    //   headers: {
+    //     'Content-Type': 'application/json',  // Define o cabeçalho como JSON
+    //   },
+    //   body: jsonEncode({
+    //     'username': email_controller.text,
+    //     'password': password_controller.text
+    //   }),
+    // );
+    //
+    // if (response.statusCode == 200) {
+    //   try {
+    //     var jsonResponse = jsonDecode(response.body);
+    //
+    //     String token = jsonResponse['token'];
+    //     await sharedPreferences.setString('auth_token', token);
+    //
+    //     return true;
+    //   } catch (e) {
+    //     print('Erro ao decodificar JSON: $e');
+    //     return false;
+    //   }
+    // } else {
+    //   print('Erro: ${response.statusCode}');
+    //   return false;
+    // }
   }
 
 

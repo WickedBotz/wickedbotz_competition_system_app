@@ -1,5 +1,3 @@
-import 'package:intl/intl.dart';
-
 class CategoriesModel {
   final int category_id;
   final int category_type;
