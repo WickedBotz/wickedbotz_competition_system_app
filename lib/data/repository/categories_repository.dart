@@ -1,42 +1,44 @@
 import 'dart:convert';
 
 import 'package:app_jurados/data/http/http_client.dart';
-import 'package:app_jurados/data/models/competitions_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../http/exceptions.dart';
+import '../models/categoties_model.dart';
 
-abstract class ICompetitionsRepository{
-  Future<List<CompetitionsModel>> getCompetitions();
+abstract class ICategoriesRepository{
+  Future<List<CategoriesModel>> getCategories();
 }
 
-class CompetitionsRepository implements ICompetitionsRepository {
+class CategoriesRepository implements ICategoriesRepository {
   final IHttpClient client;
 
-  CompetitionsRepository({required this.client});
+  CategoriesRepository({required this.client});
 
   @override
-  Future<List<CompetitionsModel>> getCompetitions() async {
+  Future<List<CategoriesModel>> getCategories() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     String? token = sharedPreferences.getString('auth_token');
 
     final response = await client.get(
-      url: 'http://10.0.2.2:5000/competitions',
+      url: 'http://10.0.2.2:5000/categories',
       headers: token != null ? {'Authorization': 'Bearer $token'} : null, // Adiciona o token se não for nulo
     );
 
+    print(jsonDecode(response.body));
+
     if (response.statusCode == 200) {
-      final List<CompetitionsModel> competitions = [];
+      final List<CategoriesModel> categories = [];
       final body = jsonDecode(response.body);
 
-      body['competitions'].forEach((item) {
-        final CompetitionsModel competition = CompetitionsModel.fromMap(item);
-        competitions.add(competition);
+      body['categories'].forEach((item) {
+        final CategoriesModel competition = CategoriesModel.fromMap(item);
+        categories.add(competition);
       });
+      print(categories);
 
-      return competitions;
+      return categories;
     } else if (response.statusCode == 404) {
-      final body = jsonDecode(response.body);
       throw NotFoundException('Erro ao interpretar resposta');
     } else {
       throw Exception('Erro ...');

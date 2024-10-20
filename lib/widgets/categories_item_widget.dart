@@ -1,15 +1,11 @@
 import 'package:flutter/material.dart';
-import '../data/models/competitions_model.dart';
-import '../pages/competition_page.dart';
 
-Widget CompetitionItemWidget({required BuildContext context, required CompetitionsModel item}){
+import '../data/models/categoties_model.dart';
+
+Widget CategoryItemWidget({required CategoriesModel item}){
   return GestureDetector(
     onTap: () =>{
-      print(item.comp_id),
-    Navigator.push(
-    context,
-    MaterialPageRoute(builder: (context) => CompetitionPage(competiotion_item: item,)),
-    )
+      print(item.category_id)
     },
     child: Container(
       padding: const EdgeInsets.all(8),
@@ -20,12 +16,12 @@ Widget CompetitionItemWidget({required BuildContext context, required Competitio
       ),
       child: Column(
         children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(16),
-            //child: Image.network(item.lf_photo),
-            child: Image.network(
-                'https://images.ctfassets.net/cnu0m8re1exe/6fVCq8MwHs552WbNadncGb/1bd5a233597acb5485c691c8110270b2/shutterstock_710379334.jpg?fm=jpg&fl=progressive&w=660&h=433&fit=fill'),
-          ),
+          // ClipRRect(
+          //   borderRadius: BorderRadius.circular(16),
+          //   //child: Image.network(item.lf_photo),
+          //   child: Image.network(
+          //       'https://images.ctfassets.net/cnu0m8re1exe/6fVCq8MwHs552WbNadncGb/1bd5a233597acb5485c691c8110270b2/shutterstock_710379334.jpg?fm=jpg&fl=progressive&w=660&h=433&fit=fill'),
+          // ),
           Container(
             padding: const EdgeInsets.all(8),
             alignment: Alignment.centerLeft,
@@ -34,21 +30,21 @@ Widget CompetitionItemWidget({required BuildContext context, required Competitio
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  item.comp_name,
+                  item.category_name,
                   style: const TextStyle(
                     fontSize: 20,
                     color: Colors.white,
                   ),
                 ),
                 Text(
-                  item.comp_adress_id.toString(),
+                  item.category_description.toString(),
                   style: const TextStyle(
                     fontSize: 15,
                     color: Colors.white,
                   ),
                 ),
                 Text(
-                  item.comp_date,
+                  item.category_rules,
                   style: const TextStyle(
                     fontSize: 15,
                     color: Colors.white,

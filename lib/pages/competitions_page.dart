@@ -67,7 +67,7 @@ class _CompetitionsPage extends State<CompetitionsPage> {
                 return const CircularProgressIndicator();
               }
               if (store.erro.value.isNotEmpty) {
-                print('Erro');
+                print('Erro ${store.erro.value}');
                 return Center(
                   child: Text(store.erro.value),
                 );
@@ -85,7 +85,7 @@ class _CompetitionsPage extends State<CompetitionsPage> {
                   itemCount: store.state.value.length,
                   itemBuilder: (_, index) {
                     final item = store.state.value[index];
-                    return CompetitionItemWidget(item: item);
+                    return CompetitionItemWidget(context: context, item: item);
                   },
                 );
               }
