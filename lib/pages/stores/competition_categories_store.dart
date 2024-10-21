@@ -3,15 +3,15 @@ import '../../data/http/exceptions.dart';
 import '../../data/models/categoties_model.dart';
 import '../../data/repository/categories_repository.dart';
 
-class CategoriesStore {
-  final ICategoriesRepository repository;
+class CompetiotionCategoriesStore {
+  final ICompetitionCategoriesRepository repository;
 
   // variaveis reativas do estado da requisiçao
   final ValueNotifier<bool> isLoading = ValueNotifier<bool>(false);
   final ValueNotifier<List<CategoriesModel>> state = ValueNotifier<List<CategoriesModel>>([]);
   final ValueNotifier<String> erro = ValueNotifier<String>('');
 
-  CategoriesStore({required this.repository});
+  CompetiotionCategoriesStore({required this.repository});
 
   Future getCategories() async{
     isLoading.value = true;

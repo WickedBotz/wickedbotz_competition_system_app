@@ -2,9 +2,18 @@ import 'package:app_jurados/pages/competitions_page.dart';
 import 'package:app_jurados/pages/login_page.dart';
 import 'package:app_jurados/themes/app_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'data/provider/user_provider.dart';
 
-void main() => runApp(MyApp());
+void main() {
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => UserProvider(), // Cria uma instância do UserProvider
+      child: MyApp(),
+    ),
+  );
+}
 
 class MyApp extends StatelessWidget {
   @override

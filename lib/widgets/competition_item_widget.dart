@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 import '../data/models/competitions_model.dart';
-import '../pages/competition_page.dart';
+import '../pages/competition_categories_page.dart';
 
-Widget CompetitionItemWidget({required BuildContext context, required CompetitionsModel item}){
+Widget CompetitionItemWidget(
+    {required BuildContext context, required CompetitionsModel item}) {
   return GestureDetector(
-    onTap: () =>{
-      print(item.comp_id),
-    Navigator.push(
-    context,
-    MaterialPageRoute(builder: (context) => CompetitionPage(competiotion_item: item,)),
-    )
+    onTap: () => {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => CompetitionCategoriesPage(
+                  competiotion_item: item,
+                )),
+      )
     },
     child: Container(
       padding: const EdgeInsets.all(8),

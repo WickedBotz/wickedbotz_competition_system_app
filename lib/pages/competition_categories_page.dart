@@ -1,21 +1,23 @@
 import 'package:app_jurados/data/http/http_client.dart';
-import 'package:app_jurados/pages/stores/categories_store.dart';
+import 'package:app_jurados/pages/stores/competition_categories_store.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../data/models/competitions_model.dart';
+import '../data/provider/user_provider.dart';
 import '../data/repository/categories_repository.dart';
 import '../themes/app_theme.dart';
 import '../widgets/categories_item_widget.dart';
 
-class CompetitionPage extends StatefulWidget {
+class CompetitionCategoriesPage extends StatefulWidget {
   final CompetitionsModel competiotion_item;
-  const CompetitionPage({super.key, required this.competiotion_item});
+  const CompetitionCategoriesPage({super.key, required this.competiotion_item});
 
   @override
-  State<CompetitionPage> createState() => _CompetitionPage();
+  State<CompetitionCategoriesPage> createState() => _CompetitionPage();
 }
 
-class _CompetitionPage extends State<CompetitionPage> {
-  final CategoriesStore store = CategoriesStore(
+class _CompetitionPage extends State<CompetitionCategoriesPage> {
+  final CompetiotionCategoriesStore store = CompetiotionCategoriesStore(
     repository: CategoriesRepository(
       client: HttpClient(),
     ),
@@ -29,6 +31,8 @@ class _CompetitionPage extends State<CompetitionPage> {
 
   @override
   Widget build(BuildContext context) {
+    final user = Provider.of<UserProvider>(context).user;
+
     return Scaffold(
       appBar: AppBar(
         elevation: 10,
@@ -45,7 +49,7 @@ class _CompetitionPage extends State<CompetitionPage> {
           ),
         ),
         title: Text(
-          widget.competiotion_item.comp_name,
+          'Logged in as: ${user?.name}',
           style: Theme.of(context).textTheme.titleMedium,
         ),
         actions: [

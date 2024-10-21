@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-
 import '../data/models/categoties_model.dart';
 
 Widget CategoryItemWidget({required CategoriesModel item}){
   return GestureDetector(
-    onTap: () =>{
-      print(item.category_id)
+    onTap: () {
+      print('Selected Category: ${item.category_id}');
     },
     child: Container(
       padding: const EdgeInsets.all(8),
@@ -25,32 +24,38 @@ Widget CategoryItemWidget({required CategoriesModel item}){
           Container(
             padding: const EdgeInsets.all(8),
             alignment: Alignment.centerLeft,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  item.category_name,
-                  style: const TextStyle(
-                    fontSize: 20,
-                    color: Colors.white,
-                  ),
+            child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children:[
+                  Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      item.category_name,
+                      style: const TextStyle(
+                        fontSize: 20,
+                        color: Colors.white,
+                      ),
+                    ),
+                    Text(
+                      item.category_description.toString(),
+                      style: const TextStyle(
+                        fontSize: 15,
+                        color: Colors.white,
+                      ),
+                    ),
+                    Text(
+                      item.category_rules,
+                      style: const TextStyle(
+                        fontSize: 15,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
                 ),
-                Text(
-                  item.category_description.toString(),
-                  style: const TextStyle(
-                    fontSize: 15,
-                    color: Colors.white,
-                  ),
-                ),
-                Text(
-                  item.category_rules,
-                  style: const TextStyle(
-                    fontSize: 15,
-                    color: Colors.white,
-                  ),
-                ),
-              ],
+                  Icon(Icons.arrow_right)
+              ]
             ),
           )
         ],

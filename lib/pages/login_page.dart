@@ -1,12 +1,12 @@
-import 'dart:convert';
 import 'package:app_jurados/pages/stores/user_store.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:provider/provider.dart';
 import '../data/http/http_client.dart';
+import '../data/models/user_model.dart';
+import '../data/provider/user_provider.dart';
 import '../data/repository/user_repository.dart';
 import '../themes/app_theme.dart';
 import '../widgets/gradient_button_widget.dart';
-import 'package:http/http.dart' as http;
 
 import 'competitions_page.dart';
 
@@ -157,7 +157,6 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<bool> loginSuccessfully() async {
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     HttpClient client = HttpClient();
 
     final UserStore store = UserStore(repository: UserRepository(client: client));
@@ -168,40 +167,18 @@ class _LoginPageState extends State<LoginPage> {
       return false;
     }
     else {
+      // Atualiza o estado global do provider com o UserModel
+      final UserModel user = store.state.value!;
+      Provider.of<UserProvider>(context, listen: false).setUser(user);
+
+
+      print(store.state.value?.name);
+      print(store.state.value?.email);
+      print(store.state.value?.token);
+
+      print(user);
       return true;
     }
-
-
-
-    // var url = Uri.parse('http://10.0.2.2:5000/login');
-    //
-    // var response = await http.post(
-    //   url,
-    //   headers: {
-    //     'Content-Type': 'application/json',  // Define o cabeçalho como JSON
-    //   },
-    //   body: jsonEncode({
-    //     'username': email_controller.text,
-    //     'password': password_controller.text
-    //   }),
-    // );
-    //
-    // if (response.statusCode == 200) {
-    //   try {
-    //     var jsonResponse = jsonDecode(response.body);
-    //
-    //     String token = jsonResponse['token'];
-    //     await sharedPreferences.setString('auth_token', token);
-    //
-    //     return true;
-    //   } catch (e) {
-    //     print('Erro ao decodificar JSON: $e');
-    //     return false;
-    //   }
-    // } else {
-    //   print('Erro: ${response.statusCode}');
-    //   return false;
-    // }
   }
 
 

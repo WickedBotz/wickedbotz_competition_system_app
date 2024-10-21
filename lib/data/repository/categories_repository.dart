@@ -6,11 +6,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../http/exceptions.dart';
 import '../models/categoties_model.dart';
 
-abstract class ICategoriesRepository{
+abstract class ICompetitionCategoriesRepository{
   Future<List<CategoriesModel>> getCategories();
 }
 
-class CategoriesRepository implements ICategoriesRepository {
+class CategoriesRepository implements ICompetitionCategoriesRepository {
   final IHttpClient client;
 
   CategoriesRepository({required this.client});
