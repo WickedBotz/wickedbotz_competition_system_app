@@ -12,17 +12,18 @@ abstract class ICompetitionsRepository{
 
 class CompetitionsRepository implements ICompetitionsRepository {
   final IHttpClient client;
+  final String token;
 
-  CompetitionsRepository({required this.client});
+  CompetitionsRepository({required this.client, required this.token});
 
   @override
   Future<List<CompetitionsModel>> getCompetitions() async {
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    String? token = sharedPreferences.getString('auth_token');
+    // SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    // String? token = sharedPreferences.getString('auth_token');
 
     final response = await client.get(
       url: 'http://10.0.2.2:5000/competitions',
-      headers: token != null ? {'Authorization': 'Bearer $token'} : null, // Adiciona o token se não for nulo
+      headers: token != null ? {'Authorization': 'Bearer $token'} : null,
     );
 
     if (response.statusCode == 200) {

@@ -1,10 +1,18 @@
 import 'package:flutter/material.dart';
 import '../data/models/categoties_model.dart';
+import '../pages/robots_by_category_page.dart';
 
-Widget CategoryItemWidget({required CategoriesModel item}){
+Widget CategoryItemWidget({required BuildContext context, required CategoriesModel item}){
   return GestureDetector(
     onTap: () {
       print('Selected Category: ${item.category_id}');
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => RobotsByCategoryPage(
+              category_id: item.category_id,
+            )),
+      );
     },
     child: Container(
       padding: const EdgeInsets.all(8),

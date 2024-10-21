@@ -2,11 +2,14 @@ import 'package:app_jurados/data/http/http_client.dart';
 import 'package:app_jurados/data/repository/competitions_repository.dart';
 import 'package:app_jurados/pages/stores/competitions_store.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../data/provider/user_provider.dart';
 import '../themes/app_theme.dart';
 import '../widgets/competition_item_widget.dart';
 
 class CompetitionsPage extends StatefulWidget {
+
   const CompetitionsPage({super.key});
 
   @override
@@ -14,17 +17,28 @@ class CompetitionsPage extends StatefulWidget {
 }
 
 class _CompetitionsPage extends State<CompetitionsPage> {
-  final CompetitionsStore store = CompetitionsStore(
-    repository: CompetitionsRepository(
-      client: HttpClient(),
-    ),
-  );
+  late CompetitionsStore store;
 
   @override
   void initState() {
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final user = Provider.of<UserProvider>(context, listen: false).user;
+
+    store = CompetitionsStore(
+      repository: CompetitionsRepository(
+        client: HttpClient(),
+        token: user!.token,
+      ),
+    );
+
     store.getCompetitions();
   }
+
 
   @override
   Widget build(BuildContext context) {
