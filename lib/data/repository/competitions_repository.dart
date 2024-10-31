@@ -21,6 +21,7 @@ class CompetitionsRepository implements ICompetitionsRepository {
     // SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     // String? token = sharedPreferences.getString('auth_token');
 
+    print('Token: $token');
     final response = await client.get(
       url: 'http://10.0.2.2:5000/competitions',
       headers: token != null ? {'Authorization': 'Bearer $token'} : null,

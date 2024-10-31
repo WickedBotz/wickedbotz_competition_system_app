@@ -17,15 +17,24 @@ class CompetitionCategoriesPage extends StatefulWidget {
 }
 
 class _CompetitionPage extends State<CompetitionCategoriesPage> {
-  final CompetiotionCategoriesStore store = CompetiotionCategoriesStore(
-    repository: CategoriesRepository(
-      client: HttpClient(),
-    ),
-  );
+  late CompetiotionCategoriesStore store;
 
   @override
   void initState() {
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final user = Provider.of<UserProvider>(context, listen: false).user;
+
+    store = CompetiotionCategoriesStore(
+      repository: CategoriesRepository(
+        client: HttpClient(), token: user!.token,
+      ),
+    );
+
     store.getCategories();
   }
 

@@ -1,8 +1,6 @@
 import 'dart:convert';
-
 import 'package:app_jurados/data/http/http_client.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../http/exceptions.dart';
 import '../models/categoties_model.dart';
 
@@ -12,14 +10,16 @@ abstract class ICompetitionCategoriesRepository{
 
 class CategoriesRepository implements ICompetitionCategoriesRepository {
   final IHttpClient client;
+  final String token;
 
-  CategoriesRepository({required this.client});
+  CategoriesRepository({required this.client, required this.token});
 
   @override
   Future<List<CategoriesModel>> getCategories() async {
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    String? token = sharedPreferences.getString('auth_token');
+    //SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    //String? token = sharedPreferences.getString('auth_token');
 
+    print('Token: $token');
     final response = await client.get(
       url: 'http://10.0.2.2:5000/categories',
       headers: token != null ? {'Authorization': 'Bearer $token'} : null, // Adiciona o token se não for nulo

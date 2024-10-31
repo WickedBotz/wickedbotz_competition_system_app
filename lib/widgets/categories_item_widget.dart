@@ -1,18 +1,28 @@
 import 'package:flutter/material.dart';
 import '../data/models/categoties_model.dart';
-import '../pages/robots_by_category_page.dart';
+import '../pages/matchs_page.dart';
+import '../pages/time_trials_page.dart';
 
 Widget CategoryItemWidget({required BuildContext context, required CategoriesModel item}){
   return GestureDetector(
     onTap: () {
-      print('Selected Category: ${item.category_id}');
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => RobotsByCategoryPage(
-              category_id: item.category_id,
-            )),
-      );
+      if(item.category_id == 1 || item.category_id == 4){ // Categorias Seguidor e Traking
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => TimeTrialsPage(
+                category_id: item.category_id,
+              )),
+        );
+      }else{
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => MatchsPage(
+                category_id: item.category_id,
+              )),
+        );
+      }
     },
     child: Container(
       padding: const EdgeInsets.all(8),
