@@ -3,13 +3,17 @@ import 'package:app_jurados/pages/stores/category_time_trial_store.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../data/models/categoties_model.dart';
+import '../data/models/competitions_model.dart';
 import '../data/models/user_model.dart';
 import '../data/provider/user_provider.dart';
 import '../data/repository/category_time_trial_repository.dart';
+import 'line_follower_time_trial_page.dart';
 
 class TimeTrialsPage extends StatefulWidget{
-  final int category_id;
-  const TimeTrialsPage({super.key, required this.category_id});
+  final CategoriesModel Category;
+  final CompetitionsModel Competiotion;
+  const TimeTrialsPage({super.key, required this.Category, required this.Competiotion});
 
   @override
   State<TimeTrialsPage> createState() => _TimeTrialsPage();
@@ -23,7 +27,7 @@ class _TimeTrialsPage extends State<TimeTrialsPage>{
   @override
   void initState(){
     super.initState();
-    print('category_id: ${widget.category_id}');
+    print('category_id: ${widget.Category.category_id}');
   }
 
   @override
@@ -34,11 +38,11 @@ class _TimeTrialsPage extends State<TimeTrialsPage>{
 
     store = CategoryTimeTrialStore(
       repository: CategoryTimeTrialRepository(
-        client: HttpClient(), category_id: widget.category_id, token: user.token,
+        client: HttpClient(), category_id: widget.Category.category_id, token: user.token,
       ),
     );
 
-    store.getRobotsTimeTrial(category_id: widget.category_id);
+    store.getRobotsTimeTrial(category_id: widget.Category.category_id);
   }
 
   @override
@@ -103,8 +107,17 @@ class _TimeTrialsPage extends State<TimeTrialsPage>{
                   final item = store.state.value[index];
                   return GestureDetector(
                     onTap: (){
+                      if(widget.Category.category_id == 1){
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => LineFollowerTimeTrialPage(
+                                timeTrial: item, Competiotion: widget.Competiotion, Category: widget.Category,
+                              )),
+                        );
+                      }
                       print(item.robot_name);
-                      print('Category id: ${widget.category_id}');
+                      print('Category id: ${widget.Category.category_id}');
                     },
                     child: Column(
                       children: [

@@ -167,7 +167,7 @@ class _CompetitionPage extends State<CompetitionCategoriesPage> {
                         final item = store.state.value[index];
                         return Column(
                           children: [
-                            CategoryItemWidget(item: item, context: context),
+                            CategoryItemWidget(item: item, context: context, Competiotion: widget.competiotion_item),
                             const SizedBox(height: 32), // Espaço entre os itens
                           ],
                         );

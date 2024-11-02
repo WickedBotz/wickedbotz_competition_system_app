@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import '../data/models/categoties_model.dart';
+import '../data/models/competitions_model.dart';
 import '../pages/matchs_page.dart';
 import '../pages/time_trials_page.dart';
 
-Widget CategoryItemWidget({required BuildContext context, required CategoriesModel item}){
+Widget CategoryItemWidget({required BuildContext context, required CategoriesModel item, required CompetitionsModel Competiotion}){
   return GestureDetector(
     onTap: () {
       if(item.category_id == 1 || item.category_id == 4){ // Categorias Seguidor e Traking
@@ -11,7 +12,7 @@ Widget CategoryItemWidget({required BuildContext context, required CategoriesMod
           context,
           MaterialPageRoute(
               builder: (context) => TimeTrialsPage(
-                category_id: item.category_id,
+               Competiotion: Competiotion, Category: item,
               )),
         );
       }else{
