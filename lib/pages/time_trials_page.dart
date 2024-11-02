@@ -1,5 +1,6 @@
 import 'package:app_jurados/data/http/http_client.dart';
 import 'package:app_jurados/pages/stores/category_time_trial_store.dart';
+import 'package:app_jurados/pages/tracking_time_trial_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -115,6 +116,16 @@ class _TimeTrialsPage extends State<TimeTrialsPage>{
                                 timeTrial: item, Competiotion: widget.Competiotion, Category: widget.Category,
                               )),
                         );
+                      }
+                      if(widget.Category.category_id == 4){
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => TrackingTimeTrialPage(
+                                timeTrial: item, Competiotion: widget.Competiotion, Category: widget.Category,
+                              )),
+                        );
+                        print('Go to Tracking Page');
                       }
                       print(item.robot_name);
                       print('Category id: ${widget.Category.category_id}');
