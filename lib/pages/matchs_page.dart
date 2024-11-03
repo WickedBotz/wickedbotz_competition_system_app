@@ -1,15 +1,19 @@
 import 'package:app_jurados/data/http/http_client.dart';
 import 'package:app_jurados/data/repository/category_match_repository.dart';
+import 'package:app_jurados/pages/pursuit_race_page.dart';
 import 'package:app_jurados/pages/stores/category_match_store.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../data/models/categoties_model.dart';
+import '../data/models/competitions_model.dart';
 import '../data/models/user_model.dart';
 import '../data/provider/user_provider.dart';
 
 class MatchsPage extends StatefulWidget{
-  final int category_id;
-  const MatchsPage({super.key, required this.category_id});
+  final CategoriesModel Category;
+  final CompetitionsModel Competiotion;
+  const MatchsPage({super.key, required this.Category, required this.Competiotion});
 
   @override
   State<MatchsPage> createState() => _MatchsPage();
@@ -23,7 +27,7 @@ class _MatchsPage extends State<MatchsPage>{
   @override
   void initState(){
     super.initState();
-    print('category_id: ${widget.category_id}');
+    print('category_id: ${widget.Category.category_id}');
   }
 
   @override
@@ -34,11 +38,11 @@ class _MatchsPage extends State<MatchsPage>{
 
     store = CategoryMatchStore(
       repository: CategoryMatchRepository(
-        client: HttpClient(), category_id: widget.category_id, token: user.token,
+        client: HttpClient(), category_id: widget.Category.category_id, token: user.token,
       ),
     );
 
-    store.getRobotsMatch(category_id: widget.category_id);
+    store.getRobotsMatch(category_id: widget.Category.category_id);
   }
 
   @override
@@ -101,10 +105,24 @@ class _MatchsPage extends State<MatchsPage>{
                 itemCount: store.state.value.length,
                 itemBuilder: (_, index){
                   final item = store.state.value[index];
+                  if(item.sequence != 0){
+                    print('SOLO::::: ${item.match_id}' );
+                  }
                   return GestureDetector(
                     onTap: (){
                       print('Match id: ${item.match_id}');
-                      print('Category id: ${widget.category_id}');
+                      print('Category id: ${widget.Category.category_id}');
+                      print('Match id: ${item.current}');
+                      print('Match id: ${item.sequence}');
+                      if(widget.Category.category_id == 2){
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => PursuitMatchPage(
+                                Match: item, Competiotion: widget.Competiotion, Category: widget.Category,
+                              )),
+                        );
+                      }
                     },
                     child: Column(
                       children: [

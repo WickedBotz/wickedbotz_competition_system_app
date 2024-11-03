@@ -20,7 +20,8 @@ Widget CategoryItemWidget({required BuildContext context, required CategoriesMod
           context,
           MaterialPageRoute(
               builder: (context) => MatchsPage(
-                category_id: item.category_id,
+                Category: item,
+                Competiotion: Competiotion,
               )),
         );
       }
