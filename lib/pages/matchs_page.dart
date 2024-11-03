@@ -64,7 +64,7 @@ class _MatchsPage extends State<MatchsPage>{
           ),
         ),
         title: Text(
-          'Logged in as: ${user?.name}',
+          'Logged in as: ${user.name}',
           style: Theme.of(context).textTheme.titleMedium,
         ),
         actions: [

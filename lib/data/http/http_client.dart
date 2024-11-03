@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 abstract class IHttpClient {
   Future<http.Response> get({required String url, Map<String, String>? headers});
   Future<http.Response> post({required String url, Map<String, String>? headers, dynamic body});
+  Future<http.Response> put({required String url, Map<String, String>? headers, dynamic body});
 }
 
 class HttpClient implements IHttpClient {
