@@ -140,9 +140,6 @@ class _MatchsPage extends State<MatchsPage> {
                     itemCount: filteredItems.length,
                     itemBuilder: (_, index) {
                       final item = filteredItems[index];
-                      if (item.sequence != 0) {
-                        print('SOLO::::: ${item.match_id}');
-                      }
                       return GestureDetector(
                         onTap: () {
                           if (widget.Category.category_id == 2 || widget.Category.category_id == 3) {

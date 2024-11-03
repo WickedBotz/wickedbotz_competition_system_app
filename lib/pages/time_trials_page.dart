@@ -25,6 +25,9 @@ class _TimeTrialsPage extends State<TimeTrialsPage>{
   late CategoryTimeTrialStore store;
   late UserModel user;
 
+  TextEditingController searchController = TextEditingController();
+  String searchQuery = '';
+
   @override
   void initState(){
     super.initState();
@@ -44,6 +47,12 @@ class _TimeTrialsPage extends State<TimeTrialsPage>{
     );
 
     store.getRobotsTimeTrial(category_id: widget.Category.category_id);
+  }
+
+  void _onSearchChanged() {
+    setState(() {
+      searchQuery = searchController.text.toLowerCase();
+    });
   }
 
   @override
@@ -76,80 +85,112 @@ class _TimeTrialsPage extends State<TimeTrialsPage>{
           ),
         ],
       ),
-      body: AnimatedBuilder(
-          animation: Listenable.merge([
-            store.isLoading,
-            store.erro,
-            store.state,
-          ]),
-          builder: (context, child) {
-            if(store.isLoading.value){
-              return const CircularProgressIndicator();
-            }
-            if(store.erro.value.isNotEmpty){
-              print('Erro');
-              return Center(
-                child: Text(store.erro.value),
-              );
-            }
-            if(store.state.value.isEmpty){
-              return const Center(
-                child: Text('Nemhum dado encontrado'),
-              );
-            }else{
-              print('Loaded');
-              return ListView.separated(
-                separatorBuilder: (context, index) => const SizedBox(
-                  height: 32,
+      body: Column(
+        children: [
+          SizedBox(height: 20,),
+          Text('Categoria: ${widget.Category.category_name}',
+            style: TextStyle(fontSize: 25),),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: TextField(
+              controller: searchController,
+              decoration: InputDecoration(
+                hintText: 'Nome do robô ou equipe',
+                hintStyle: TextStyle(fontSize: 16),
+                prefixIcon: Icon(Icons.search),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
                 ),
-                padding: const EdgeInsets.all(16),
-                itemCount: store.state.value.length,
-                itemBuilder: (_, index){
-                  final item = store.state.value[index];
-                  return GestureDetector(
-                    onTap: (){
-                      if(widget.Category.category_id == 1){
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => LineFollowerTimeTrialPage(
-                                timeTrial: item, Competiotion: widget.Competiotion, Category: widget.Category,
-                              )),
-                        );
-                      }
-                      if(widget.Category.category_id == 4){
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => TrackingTimeTrialPage(
-                                timeTrial: item, Competiotion: widget.Competiotion, Category: widget.Category,
-                              )),
-                        );
-                        print('Go to Tracking Page');
-                      }
-                      print(item.robot_name);
-                      print('Category id: ${widget.Category.category_id}');
-                    },
-                    child: Column(
-                      children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(16),
-                          //child: Image.network(item.lf_photo),
-                          child: Image.network('https://images.ctfassets.net/cnu0m8re1exe/6fVCq8MwHs552WbNadncGb/1bd5a233597acb5485c691c8110270b2/shutterstock_710379334.jpg?fm=jpg&fl=progressive&w=660&h=433&fit=fill'),
-                        ),
-                        ListTile(
-                          contentPadding: EdgeInsets.zero,
-                          title: Text(item.robot_name),
-                          subtitle: Text('Team name: ${item.team_name}'),
-                        ),
-
-                      ],
-                    ),
+              ),
+              onChanged: (text) => _onSearchChanged(),
+            ),
+          ),
+          Expanded(
+            child: AnimatedBuilder(
+              animation: Listenable.merge([
+                store.isLoading,
+                store.erro,
+                store.state,
+              ]),
+              builder: (context, child) {
+                if(store.isLoading.value){
+                  return const CircularProgressIndicator();
+                }
+                if(store.erro.value.isNotEmpty){
+                  print('Erro');
+                  return Center(
+                    child: Text(store.erro.value),
                   );
-                },
-              );
-            }
-          }),
+                }
+                if(store.state.value.isEmpty){
+                  return const Center(
+                    child: Text('Nemhum dado encontrado'),
+                  );
+                }
+
+                final filteredItems = store.state.value.where((item) {
+                  final robotNames = '${item.robot_name}'.toLowerCase();
+                  final teamNames = '${item.team_name}'.toLowerCase();
+                  return robotNames.contains(searchQuery) || teamNames.contains(searchQuery);
+                }).toList();
+
+                if (filteredItems.isEmpty) {
+                  return const Center(
+                    child: Text('Nenhum dado encontrado'),
+                  );
+                }else{
+                  return ListView.separated(
+                    separatorBuilder: (context, index) => const SizedBox(
+                      height: 32,
+                    ),
+                    padding: const EdgeInsets.all(16),
+                    itemCount: filteredItems.length,
+                    itemBuilder: (_, index){
+                      final item = filteredItems[index];
+                      return GestureDetector(
+                        onTap: (){
+                          if(widget.Category.category_id == 1){
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => LineFollowerTimeTrialPage(
+                                    timeTrial: item, Competiotion: widget.Competiotion, Category: widget.Category,
+                                  )),
+                            );
+                          }
+                          if(widget.Category.category_id == 4){
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => TrackingTimeTrialPage(
+                                    timeTrial: item, Competiotion: widget.Competiotion, Category: widget.Category,
+                                  )),
+                            );
+                          }
+                        },
+                        child: Column(
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(16),
+                              //child: Image.network(item.lf_photo),
+                              child: Image.network('https://images.ctfassets.net/cnu0m8re1exe/6fVCq8MwHs552WbNadncGb/1bd5a233597acb5485c691c8110270b2/shutterstock_710379334.jpg?fm=jpg&fl=progressive&w=660&h=433&fit=fill'),
+                            ),
+                            ListTile(
+                              contentPadding: EdgeInsets.zero,
+                              title: Text(item.robot_name),
+                              subtitle: Text('Team name: ${item.team_name}'),
+                            ),
+
+                          ],
+                        ),
+                      );
+                    },
+                  );
+                }
+              }),
+          )
+        ],
+      )
     );
   }
 
