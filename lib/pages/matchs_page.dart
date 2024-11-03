@@ -9,6 +9,7 @@ import '../data/models/categoties_model.dart';
 import '../data/models/competitions_model.dart';
 import '../data/models/user_model.dart';
 import '../data/provider/user_provider.dart';
+import 'combat_page.dart';
 
 class MatchsPage extends StatefulWidget{
   final CategoriesModel Category;
@@ -114,11 +115,20 @@ class _MatchsPage extends State<MatchsPage>{
                       print('Category id: ${widget.Category.category_id}');
                       print('Match id: ${item.current}');
                       print('Match id: ${item.sequence}');
-                      if(widget.Category.category_id == 2){
+                      if(widget.Category.category_id == 2 || widget.Category.category_id == 3){
                         Navigator.push(
                           context,
                           MaterialPageRoute(
                               builder: (context) => PursuitMatchPage(
+                                Match: item, Competiotion: widget.Competiotion, Category: widget.Category,
+                              )),
+                        );
+                      }
+                      else{
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => CombatMatchPage(
                                 Match: item, Competiotion: widget.Competiotion, Category: widget.Category,
                               )),
                         );
