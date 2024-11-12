@@ -329,7 +329,7 @@ class _CombatMatchPage extends State<CombatMatchPage> {
     });
 
     final response = await client.put(
-      url: 'http://10.0.2.2:5000/matches/${widget.Match.match_id}',
+      url: 'http://localhost:5000/matches/${widget.Match.match_id}',
       headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer $token'},
       body: body,
     );

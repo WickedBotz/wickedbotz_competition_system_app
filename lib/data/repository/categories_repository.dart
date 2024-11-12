@@ -21,7 +21,7 @@ class CategoriesRepository implements ICompetitionCategoriesRepository {
 
     print('Token: $token');
     final response = await client.get(
-      url: 'http://10.0.2.2:5000/categories',
+      url: 'http://localhost:5000/categories',
       headers: token != null ? {'Authorization': 'Bearer $token'} : null, // Adiciona o token se não for nulo
     );
 

@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class AppTheme {
   static final ThemeData mainTheme = ThemeData(
-    textTheme: const TextTheme(
-      titleLarge:TextStyle(color: Colors.white, fontSize: 36, fontWeight: FontWeight.w600),
-      titleMedium:TextStyle(color: Colors.white, fontSize: 26, fontWeight: FontWeight.w600),
-      bodyLarge: TextStyle(color: Colors.white, fontSize: 26, fontWeight: FontWeight.w600),
-      bodyMedium: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w400),
-      labelMedium: TextStyle(color: Colors.white54, fontSize: 16, fontWeight: FontWeight.w400),
+    textTheme: TextTheme(
+      titleLarge: GoogleFonts.montserrat(color: Colors.white, fontSize: 36, fontWeight: FontWeight.w600),
+      titleMedium: GoogleFonts.montserrat(color: Colors.white, fontSize: 26, fontWeight: FontWeight.w600),
+      bodyLarge: GoogleFonts.montserrat(color: Colors.white, fontSize: 26, fontWeight: FontWeight.w600),
+      bodyMedium: GoogleFonts.montserrat(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w400),
+      labelMedium: GoogleFonts.montserrat(color: Colors.white54, fontSize: 16, fontWeight: FontWeight.w400),
     ),
     colorScheme: ColorScheme.dark(
       //primary: const Color(0xFF96d7eb),
@@ -18,7 +19,7 @@ class AppTheme {
       GradientContainerTheme(
         gradientDecoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [Color(0xff000000), Color(0xff06060e), Color(0xff000428)],
+            colors: [Color.fromARGB(0, 0, 0, 0), Color.fromARGB(0, 6, 6, 14), Color.fromARGB(0, 0, 4, 40)],
             stops: [0.1, 0.8, 1],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,

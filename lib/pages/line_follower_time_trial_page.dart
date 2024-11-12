@@ -255,7 +255,7 @@ class _LineFollowerTimeTrialPage extends State<LineFollowerTimeTrialPage> {
     });
 
     final response = await client.post(
-      url: 'http://10.0.2.2:5000/time_trials',
+      url: 'http://localhost:5000/time_trials',
       headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer $token'},
       body: body,
     );
