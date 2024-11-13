@@ -57,14 +57,14 @@ Widget CompetitionItemWidget({
                       item.comp_adress_id.toString(),
                       style: const TextStyle(
                         fontSize: 15,
-                        color: Colors.white,
+                        color: Color.fromARGB(255, 179, 179, 179),
                       ),
                     ),
                     Text(
                       item.comp_date,
                       style: const TextStyle(
                         fontSize: 15,
-                        color: Colors.white,
+                        color: Color.fromARGB(255, 179, 179, 179),
                       ),
                     ),
                   ],

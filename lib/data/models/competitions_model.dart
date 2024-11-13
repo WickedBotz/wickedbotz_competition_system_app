@@ -5,6 +5,7 @@ class CompetitionsModel {
   final int comp_adress_id;
   final String comp_name;
   final String comp_date;
+  
 
 
   CompetitionsModel(

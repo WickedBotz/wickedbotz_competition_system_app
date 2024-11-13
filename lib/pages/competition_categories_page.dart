@@ -46,19 +46,38 @@ class _CompetitionPage extends State<CompetitionCategoriesPage> {
       appBar: AppBar(
         elevation: 10,
         backgroundColor: Colors.grey[800],
-        leading: Container(
-          margin: const EdgeInsets.all(10),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(50),
-            border: Border.all(color: Colors.grey.shade900),
-            image: const DecorationImage(
-              image: NetworkImage('https://images.ctfassets.net/cnu0m8re1exe/6fVCq8MwHs552WbNadncGb/1bd5a233597acb5485c691c8110270b2/shutterstock_710379334.jpg?fm=jpg&fl=progressive&w=660&h=433&fit=fill'),
-              fit: BoxFit.cover,
+        leading: Column( // Botão para voltar
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            GestureDetector(
+              onTap: () {
+                Navigator.pop(context);
+              },
+              child: Container(
+                margin: const EdgeInsets.all(15),
+                decoration: BoxDecoration(
+                  color: Colors.transparent,
+                  borderRadius: BorderRadius.circular(5),
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Colors.black12,
+                      blurRadius: 2,
+                      spreadRadius: 4,
+                    ),
+                  ],
+                ),
+                child: Icon(
+                  Icons.arrow_back,
+                  color: Theme.of(context).iconTheme.color,
+                  size: 30,
+                ),
+              ),
             ),
-          ),
+          ],
         ),
         title: Text(
-          'Logged in as: ${user?.name}',
+          widget.competiotion_item.comp_name,
           style: Theme.of(context).textTheme.titleMedium,
         ),
         actions: [
@@ -74,78 +93,55 @@ class _CompetitionPage extends State<CompetitionCategoriesPage> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Stack(
+                Stack(
                 clipBehavior: Clip.none,
                 children: [
                   Container(
-                    width: MediaQuery.of(context).size.width,
-                    height: MediaQuery.of(context).size.height / 3,
-                    decoration: BoxDecoration(
-                      //borderRadius: BorderRadius.circular(30),
-                      image: const DecorationImage(
-                        image: NetworkImage('https://images.ctfassets.net/cnu0m8re1exe/6fVCq8MwHs552WbNadncGb/1bd5a233597acb5485c691c8110270b2/shutterstock_710379334.jpg?fm=jpg&fl=progressive&w=660&h=433&fit=fill'),
-                        fit: BoxFit.cover,
-                      ),
+                  width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.height / 3,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                    colors: [Colors.blue, Colors.purple],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
                     ),
                   ),
-                  Positioned(
-                    bottom: 0,
-                      child:Container(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children:[
-                              Container(
-                                width: MediaQuery.of(context).size.width /2,
-                                height: MediaQuery.of(context).size.height / 5,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  image: const DecorationImage(
-                                    image: NetworkImage('https://images.ctfassets.net/cnu0m8re1exe/6fVCq8MwHs552WbNadncGb/1bd5a233597acb5485c691c8110270b2/shutterstock_710379334.jpg?fm=jpg&fl=progressive&w=660&h=433&fit=fill'),
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              ),
-                              Text(widget.competiotion_item.comp_name),
-                              Text('Data: ${widget.competiotion_item.comp_date}'),
-                              Text('Local: ${widget.competiotion_item.comp_adress_id.toString()}'),
-                            ]
-                        ),
-                      ),
                   ),
-                  Column( // Botão para voltar
+                    Positioned(
+                    bottom: 0,
+                    child: Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.height / 5, // Increased height by 50%
+                    color: Colors.grey[850],
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.pop(context);
-                        },
-                        child: Container(
-                          margin: const EdgeInsets.all(15),
-                          decoration: BoxDecoration(
-                            color: Colors.transparent,
-                            borderRadius: BorderRadius.circular(5),
-                            boxShadow: const [
-                              BoxShadow(
-                                color: Colors.black12,
-                                blurRadius: 2,
-                                spreadRadius: 4,
-                              ),
-                            ],
-                          ),
-                          child: Icon(
-                            Icons.arrow_back,
-                            color: Theme.of(context).iconTheme.color,
-                            size: 30,
-                          ),
-                        ),
-                      ),
+                      Text(widget.competiotion_item.comp_name),
+                      Text('Data: ${widget.competiotion_item.comp_date}'),
+                      Text('Local: ${widget.competiotion_item.comp_adress_id.toString()}'),
                     ],
-                  ),
+                    ),
+                    ),
+                    ),
+                   Positioned(
+                    top: MediaQuery.of(context).size.height * 0.1,
+                    left: MediaQuery.of(context).size.width * 0.05,
+                    child: Container(
+                    width: MediaQuery.of(context).size.width / 2,
+                    height: MediaQuery.of(context).size.height / 5,
+                    decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    image: const DecorationImage(
+                      image: NetworkImage('https://images.ctfassets.net/cnu0m8re1exe/6fVCq8MwHs552WbNadncGb/1bd5a233597acb5485c691c8110270b2/shutterstock_710379334.jpg?fm=jpg&fl=progressive&w=660&h=433&fit=fill'),
+                      fit: BoxFit.cover,
+                    ),
+                    ),
+                    ),
+                    ),
                 ],
-              ),
+                ),
               // O conteúdo da lista gerada agora está diretamente abaixo do Stack
               SizedBox(height: 20),
               AnimatedBuilder(
@@ -167,7 +163,7 @@ class _CompetitionPage extends State<CompetitionCategoriesPage> {
                         final item = store.state.value[index];
                         return Column(
                           children: [
-                            CategoryItemWidget(item: item, context: context, Competiotion: widget.competiotion_item),
+                            CategoryItemWidget(item: item, context: context, competition: widget.competiotion_item),
                             const SizedBox(height: 32), // Espaço entre os itens
                           ],
                         );
