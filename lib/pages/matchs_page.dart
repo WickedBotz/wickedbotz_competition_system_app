@@ -10,6 +10,7 @@ import '../data/models/competitions_model.dart';
 import '../data/models/user_model.dart';
 import '../data/provider/user_provider.dart';
 import 'combat_page.dart';
+import '../widgets/sidebar_widget.dart';
 
 class MatchsPage extends StatefulWidget {
   final CategoriesModel Category;
@@ -23,6 +24,7 @@ class MatchsPage extends StatefulWidget {
 class _MatchsPage extends State<MatchsPage> {
   late CategoryMatchStore store;
   late UserModel user;
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   TextEditingController searchController = TextEditingController();
   String searchQuery = '';
 
@@ -56,48 +58,68 @@ class _MatchsPage extends State<MatchsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
+      endDrawer: CustomSidebar(),
       appBar: AppBar(
         elevation: 10,
-        backgroundColor: Colors.grey[800],
-        leading: Container(
-          margin: const EdgeInsets.all(10),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(50),
-            border: Border.all(color: Colors.grey.shade900),
-            image: const DecorationImage(
-              image: NetworkImage('https://images.ctfassets.net/cnu0m8re1exe/6fVCq8MwHs552WbNadncGb/1bd5a233597acb5485c691c8110270b2/shutterstock_710379334.jpg?fm=jpg&fl=progressive&w=660&h=433&fit=fill'),
-              fit: BoxFit.cover,
+        backgroundColor: const Color.fromARGB(255, 26, 26, 26),
+        leading: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            GestureDetector(
+              onTap: () {
+                Navigator.pop(context);
+              },
+              child: Container(
+                margin: const EdgeInsets.all(15),
+                decoration: BoxDecoration(
+                  color: Colors.transparent,
+                  borderRadius: BorderRadius.circular(5),
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Colors.black12,
+                      blurRadius: 2,
+                      spreadRadius: 4,
+                    ),
+                  ],
+                ),
+                child: Icon(
+                  Icons.arrow_back,
+                  color: Theme.of(context).iconTheme.color,
+                  size: 26,
+                ),
+              ),
             ),
-          ),
-        ),
-        title: Text(
-          'Logged in as: ${user.name}',
-          style: Theme.of(context).textTheme.titleMedium,
+          ],
         ),
         actions: [
           IconButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
+            onPressed: () => {_scaffoldKey.currentState!.openEndDrawer()},
             icon: const Icon(Icons.menu, color: Colors.white),
           ),
         ],
       ),
       body: Column(
         children: [
-          SizedBox(height: 20,),
-          Text('Categoria: ${widget.Category.category_name}',
-            style: TextStyle(fontSize: 25),),
+          const SizedBox(height: 20),
+          Text(
+            'Categoria: ${widget.Category.category_name}',
+            style: const TextStyle(fontSize: 25, color: Colors.white70),
+          ),
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: TextField(
               controller: searchController,
               decoration: InputDecoration(
+                filled: true,
+                fillColor: Colors.grey[800],
                 hintText: 'Nome do robô ou equipe',
-                hintStyle: TextStyle(fontSize: 16),
-                prefixIcon: Icon(Icons.search),
+                hintStyle: const TextStyle(fontSize: 16, color: Colors.white54),
+                prefixIcon: const Icon(Icons.search, color: Colors.white54),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
+                  borderSide: BorderSide.none,
                 ),
               ),
               onChanged: (text) => _onSearchChanged(),
@@ -132,57 +154,83 @@ class _MatchsPage extends State<MatchsPage> {
                     child: Text('Nenhum dado encontrado'),
                   );
                 } else {
-                  return ListView.separated(
-                    separatorBuilder: (context, index) => const SizedBox(
-                      height: 32,
-                    ),
+                  return Container(
                     padding: const EdgeInsets.all(16),
-                    itemCount: filteredItems.length,
-                    itemBuilder: (_, index) {
-                      final item = filteredItems[index];
-                      return GestureDetector(
-                        onTap: () {
-                          if (widget.Category.category_id == 2 || widget.Category.category_id == 3) {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => PursuitMatchPage(
-                                  Match: item,
-                                  Competiotion: widget.Competiotion,
-                                  Category: widget.Category,
+                    margin: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.grey[900],
+                      borderRadius: BorderRadius.circular(12.0),
+                    ),
+                    child: ListView.builder(
+                      itemCount: filteredItems.length,
+                      itemBuilder: (_, index) {
+                        final item = filteredItems[index];
+                        return GestureDetector(
+                          onTap: () {
+                            if (widget.Category.category_id == 2 || widget.Category.category_id == 3) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => PursuitMatchPage(
+                                    Match: item,
+                                    Competiotion: widget.Competiotion,
+                                    Category: widget.Category,
+                                  ),
                                 ),
-                              ),
-                            );
-                          } else {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => CombatMatchPage(
-                                  Match: item,
-                                  Competiotion: widget.Competiotion,
-                                  Category: widget.Category,
+                              );
+                            } else {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => CombatMatchPage(
+                                    Match: item,
+                                    Competiotion: widget.Competiotion,
+                                    Category: widget.Category,
+                                  ),
                                 ),
-                              ),
-                            );
-                          }
-                        },
-                        child: Column(
-                          children: [
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(16),
-                              child: Image.network(
-                                'https://images.ctfassets.net/cnu0m8re1exe/6fVCq8MwHs552WbNadncGb/1bd5a233597acb5485c691c8110270b2/shutterstock_710379334.jpg?fm=jpg&fl=progressive&w=660&h=433&fit=fill',
-                              ),
+                              );
+                            }
+                          },
+                          child: Container(
+                            margin: const EdgeInsets.symmetric(vertical: 8.0),
+                            padding: const EdgeInsets.all(16.0),
+                            decoration: BoxDecoration(
+                              color: Colors.grey[800],
+                              borderRadius: BorderRadius.circular(12.0),
                             ),
-                            ListTile(
-                              contentPadding: EdgeInsets.zero,
-                              title: Text('Robots: ${item.robot_1_name} X ${item.robot_2_name}'),
-                              subtitle: Text('Teams: ${item.team_1_name} / ${item.team_2_name}'),
+                            child: Row(
+                              children: [
+                                const SizedBox(width: 16),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        item.robot_1_name,
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                      SizedBox(height: 3),
+                                      Divider(color: Colors.white54, height: 1),
+                                      SizedBox(height: 3),
+                                      Text(
+                                        item.robot_2_name,
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
-                      );
-                    },
+                          ),
+                        );
+                      },
+                    ),
                   );
                 }
               },

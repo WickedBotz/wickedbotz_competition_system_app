@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:app_jurados/data/http/http_client.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../http/exceptions.dart';
 import '../models/categoties_model.dart';
 

@@ -5,7 +5,7 @@ class AppTheme {
   static final ThemeData mainTheme = ThemeData(
     textTheme: TextTheme(
       titleLarge: GoogleFonts.montserrat(color: Colors.white, fontSize: 36, fontWeight: FontWeight.w600),
-      titleMedium: GoogleFonts.montserrat(color: Colors.white, fontSize: 26, fontWeight: FontWeight.w600),
+      titleMedium: GoogleFonts.montserrat(color: Colors.white, fontSize: 26, fontWeight: FontWeight.w500),
       bodyLarge: GoogleFonts.montserrat(color: Colors.white, fontSize: 26, fontWeight: FontWeight.w600),
       bodyMedium: GoogleFonts.montserrat(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w400),
       labelMedium: GoogleFonts.montserrat(color: Colors.white54, fontSize: 16, fontWeight: FontWeight.w400),

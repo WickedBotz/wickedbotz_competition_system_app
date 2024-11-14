@@ -11,6 +11,8 @@ import '../widgets/gradient_button_widget.dart';
 import 'competitions_page.dart';
 
 class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
+
   @override
   _LoginPageState createState() => _LoginPageState();
 }

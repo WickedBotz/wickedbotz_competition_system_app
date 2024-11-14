@@ -7,6 +7,7 @@ import '../data/provider/user_provider.dart';
 import '../data/repository/categories_repository.dart';
 import '../themes/app_theme.dart';
 import '../widgets/categories_item_widget.dart';
+import '../widgets/sidebar_widget.dart'; 
 
 class CompetitionCategoriesPage extends StatefulWidget {
   final CompetitionsModel competiotion_item;
@@ -18,6 +19,7 @@ class CompetitionCategoriesPage extends StatefulWidget {
 
 class _CompetitionPage extends State<CompetitionCategoriesPage> {
   late CompetiotionCategoriesStore store;
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -31,7 +33,8 @@ class _CompetitionPage extends State<CompetitionCategoriesPage> {
 
     store = CompetiotionCategoriesStore(
       repository: CategoriesRepository(
-        client: HttpClient(), token: user!.token,
+        client: HttpClient(),
+        token: user!.token,
       ),
     );
 
@@ -43,10 +46,12 @@ class _CompetitionPage extends State<CompetitionCategoriesPage> {
     final user = Provider.of<UserProvider>(context).user;
 
     return Scaffold(
+      key: _scaffoldKey,
+      endDrawer: CustomSidebar(),
       appBar: AppBar(
         elevation: 10,
-        backgroundColor: Colors.grey[800],
-        leading: Column( // Botão para voltar
+        backgroundColor: const Color.fromARGB(255, 26, 26, 26),
+        leading: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -70,115 +75,170 @@ class _CompetitionPage extends State<CompetitionCategoriesPage> {
                 child: Icon(
                   Icons.arrow_back,
                   color: Theme.of(context).iconTheme.color,
-                  size: 30,
+                  size: 26,
                 ),
               ),
             ),
           ],
         ),
-        title: Text(
-          widget.competiotion_item.comp_name,
-          style: Theme.of(context).textTheme.titleMedium,
-        ),
         actions: [
           IconButton(
-            onPressed: () => {},
+            onPressed: () => {
+              _scaffoldKey.currentState!.openEndDrawer()
+            },
             icon: const Icon(Icons.menu, color: Colors.white),
           ),
         ],
       ),
       body: SingleChildScrollView(
         child: Container(
-          decoration: Theme.of(context).extension<GradientContainerTheme>()!.gradientDecoration!,
+          decoration: Theme.of(context)
+              .extension<GradientContainerTheme>()!
+              .gradientDecoration!,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-                Stack(
+              Stack(
                 clipBehavior: Clip.none,
                 children: [
                   Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height / 3,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                    colors: [Colors.blue, Colors.purple],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.height / 3,
+                    decoration: const BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [Color(0xff245C6B), Color(0xff0CFFFD)],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
                     ),
                   ),
-                  ),
-                    Positioned(
+                  Positioned(
                     bottom: 0,
                     child: Container(
-                    width: MediaQuery.of(context).size.width,
-                    height: MediaQuery.of(context).size.height / 5, // Increased height by 50%
-                    color: Colors.grey[850],
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(widget.competiotion_item.comp_name),
-                      Text('Data: ${widget.competiotion_item.comp_date}'),
-                      Text('Local: ${widget.competiotion_item.comp_adress_id.toString()}'),
-                    ],
+                      width: MediaQuery.of(context).size.width,
+                      height: MediaQuery.of(context).size.height /
+                          4.7, // Aumentar a altura do fundo cinza
+                      padding: const EdgeInsets.only(
+                          left: 16,
+                          right: 16,
+                          top: 80,
+                          bottom: 16), // Ajustar espaçamento interno
+                      color: Colors.grey[850],
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(height: 7),
+                          Text(
+                            widget.competiotion_item.comp_name,
+                            style: const TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+                          const SizedBox(
+                              height:
+                                  5), // Aumentar espaço entre título e informações
+                          Text(
+                            'Data: ${widget.competiotion_item.comp_date}',
+                            style: const TextStyle(
+                              fontSize: 16,
+                              color: Colors.white70,
+                            ),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            'Local: ${widget.competiotion_item.comp_adress_id.toString()}',
+                            style: const TextStyle(
+                              fontSize: 16,
+                              color: Colors.white70,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                    ),
-                    ),
-                   Positioned(
-                    top: MediaQuery.of(context).size.height * 0.1,
-                    left: MediaQuery.of(context).size.width * 0.05,
+                  ),
+                  Positioned(
+                    top: MediaQuery.of(context).size.height *
+                        0.03, // Ajuste para mover a imagem mais acima
+                    left: MediaQuery.of(context).size.width * 0.03,
                     child: Container(
-                    width: MediaQuery.of(context).size.width / 2,
-                    height: MediaQuery.of(context).size.height / 5,
-                    decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    image: const DecorationImage(
-                      image: NetworkImage('https://images.ctfassets.net/cnu0m8re1exe/6fVCq8MwHs552WbNadncGb/1bd5a233597acb5485c691c8110270b2/shutterstock_710379334.jpg?fm=jpg&fl=progressive&w=660&h=433&fit=fill'),
-                      fit: BoxFit.cover,
+                      width: MediaQuery.of(context).size.width /
+                          2.5, // Diminuir o tamanho da imagem
+                      height: MediaQuery.of(context).size.height /
+                          5.5, // Diminuir a altura da imagem
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        image: const DecorationImage(
+                          image: NetworkImage(
+                            'https://images.ctfassets.net/cnu0m8re1exe/6fVCq8MwHs552WbNadncGb/1bd5a233597acb5485c691c8110270b2/shutterstock_710379334.jpg',
+                          ),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
                     ),
-                    ),
-                    ),
-                    ),
+                  ),
                 ],
-                ),
-              // O conteúdo da lista gerada agora está diretamente abaixo do Stack
-              SizedBox(height: 20),
+              ),
+              const SizedBox(height: 20),
               AnimatedBuilder(
-                animation: Listenable.merge([store.isLoading, store.erro, store.state]),
+                animation: Listenable.merge(
+                    [store.isLoading, store.erro, store.state]),
                 builder: (context, child) {
                   if (store.isLoading.value) {
                     return const Center(child: CircularProgressIndicator());
                   }
                   if (store.erro.value.isNotEmpty) {
-                    print('Erro ${store.erro.value}');
                     return Center(child: Text(store.erro.value));
                   }
                   if (store.state.value.isEmpty) {
                     return const Center(child: Text('Nenhum dado encontrado'));
                   } else {
-                    // Usando List.generate para criar os itens
-                    return Column(
-                      children: List.generate(store.state.value.length, (index) {
-                        final item = store.state.value[index];
-                        return Column(
+                    // Envolvendo a lista com um Container para aplicar o estilo
+                    return Container(
+                      padding: const EdgeInsets.all(16.0),
+                      decoration: BoxDecoration(
+                      color: Colors.grey[850], // Aplicando uma cor de fundo
+                      borderRadius: BorderRadius.circular(
+                        10.0), // Aplicando bordas arredondadas
+                      ),
+                      child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                        'Categorias',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                        ),
+                        const SizedBox(height: 10),
+                        Column(
+                        children:
+                          List.generate(store.state.value.length, (index) {
+                          final item = store.state.value[index];
+                          return Column(
                           children: [
-                            CategoryItemWidget(item: item, context: context, competition: widget.competiotion_item),
-                            const SizedBox(height: 32), // Espaço entre os itens
+                            CategoryItemWidget(
+                              item: item,
+                              competition: widget.competiotion_item),
+                            const SizedBox(height: 24),
                           ],
-                        );
-                      }),
+                          );
+                        }),
+                        ),
+                      ],
+                      ),
                     );
                   }
                 },
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
             ],
           ),
         ),
       ),
-
     );
   }
-
 }

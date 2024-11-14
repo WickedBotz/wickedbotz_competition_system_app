@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
-// Import your pages here
+import 'package:provider/provider.dart'; // Add this import
+import '../data/provider/user_provider.dart'; // Import UserProvider
 import '../pages/login_page.dart';
 import '../pages/competitions_page.dart';
 
 class CustomSidebar extends StatelessWidget {
+  const CustomSidebar({super.key});
+
   @override
   Widget build(BuildContext context) {
+    final user = Provider.of<UserProvider>(context).user;
     return Drawer(
       child: Container(
         color: const Color(0xFF1C1C1C), // Background color of the sidebar
@@ -18,7 +22,7 @@ class CustomSidebar extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
+                  const Text(
                     'Wickedbotz',
                     style: TextStyle(
                       color: Colors.tealAccent,
@@ -30,7 +34,7 @@ class CustomSidebar extends StatelessWidget {
                   CircleAvatar(
                     radius: 30,
                     backgroundColor: Colors.grey.shade800,
-                    child: Icon(Icons.person, color: Colors.white, size: 40),
+                    child: const Icon(Icons.person, color: Colors.white, size: 40),
                   ),
                   const SizedBox(height: 8),
                   Text(
@@ -42,7 +46,7 @@ class CustomSidebar extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    'Ariel',
+                    '${user?.name ?? 'Usuário'}',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 16,
@@ -51,7 +55,7 @@ class CustomSidebar extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    'ariel@gmail.com',
+                    '${user?.email ?? 'teste@teste.com'}',
                     style: TextStyle(
                       color: Colors.grey.shade400,
                       fontSize: 14,
@@ -72,7 +76,7 @@ class CustomSidebar extends StatelessWidget {
                 Navigator.of(context).pop();
                 // Navigate to CompetitionsPage
                 Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(builder: (context) => CompetitionsPage()),
+                  MaterialPageRoute(builder: (context) => const CompetitionsPage()),
                 );
               },
             ),
@@ -92,7 +96,7 @@ class CustomSidebar extends StatelessWidget {
                 _showComingSoonDialog(context);
               },
             ),
-            Spacer(),
+            const Spacer(),
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: GestureDetector(
@@ -104,10 +108,10 @@ class CustomSidebar extends StatelessWidget {
                     MaterialPageRoute(builder: (context) => LoginPage()),
                   );
                 },
-                child: Row(
+                child: const Row(
                   children: [
                     Icon(Icons.logout, color: Colors.red),
-                    const SizedBox(width: 8),
+                    SizedBox(width: 8),
                     Text(
                       'Sair da Conta',
                       style: TextStyle(
@@ -130,11 +134,11 @@ class CustomSidebar extends StatelessWidget {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Em breve'),
-          content: Text('Esta funcionalidade estará disponível em breve.'),
+          title: const Text('Em breve'),
+          content: const Text('Esta funcionalidade estará disponível em breve.'),
           actions: [
             TextButton(
-              child: Text('OK'),
+              child: const Text('OK'),
               onPressed: () {
                 Navigator.of(context).pop(); // Close the dialog
               },
@@ -153,12 +157,12 @@ class SidebarItem extends StatelessWidget {
   final VoidCallback? onTap;
 
   const SidebarItem({
-    Key? key,
+    super.key,
     required this.icon,
     required this.label,
     this.selected = false,
     this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
