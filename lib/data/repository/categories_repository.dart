@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:app_jurados/data/http/http_client.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../http/exceptions.dart';
 import '../models/categoties_model.dart';
 
@@ -21,7 +20,7 @@ class CategoriesRepository implements ICompetitionCategoriesRepository {
 
     print('Token: $token');
     final response = await client.get(
-      url: 'http://10.0.2.2:5000/categories',
+      url: 'http://192.168.0.37:5000/categories',
       headers: token != null ? {'Authorization': 'Bearer $token'} : null, // Adiciona o token se não for nulo
     );
 

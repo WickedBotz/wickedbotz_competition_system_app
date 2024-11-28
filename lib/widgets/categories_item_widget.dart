@@ -4,82 +4,166 @@ import '../data/models/competitions_model.dart';
 import '../pages/matchs_page.dart';
 import '../pages/time_trials_page.dart';
 
-Widget CategoryItemWidget({required BuildContext context, required CategoriesModel item, required CompetitionsModel Competiotion}){
-  return GestureDetector(
-    onTap: () {
-      if(item.category_id == 1 || item.category_id == 4){ // Categorias Seguidor e Traking
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => TimeTrialsPage(
-               Competiotion: Competiotion, Category: item,
-              )),
-        );
-      }else{
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => MatchsPage(
-                Category: item,
-                Competiotion: Competiotion,
-              )),
-        );
-      }
-    },
-    child: Container(
-      padding: const EdgeInsets.all(8),
+/// Widget que exibe a lista de categorias em um formato compacto com um título.
+class CategoryListWidget extends StatelessWidget {
+  final List<CategoriesModel> categories;
+  final CompetitionsModel competition;
+
+  const CategoryListWidget({
+    Key? key,
+    required this.categories,
+    required this.competition,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(16.0),
+      margin: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.grey.shade600),
-        color: Colors.grey.shade800,
+        color: Colors.grey.shade900,
+        borderRadius: BorderRadius.circular(12.0),
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // ClipRRect(
-          //   borderRadius: BorderRadius.circular(16),
-          //   //child: Image.network(item.lf_photo),
-          //   child: Image.network(
-          //       'https://images.ctfassets.net/cnu0m8re1exe/6fVCq8MwHs552WbNadncGb/1bd5a233597acb5485c691c8110270b2/shutterstock_710379334.jpg?fm=jpg&fl=progressive&w=660&h=433&fit=fill'),
-          // ),
-          Container(
-            padding: const EdgeInsets.all(8),
-            alignment: Alignment.centerLeft,
-            child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children:[
-                  Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      item.category_name,
-                      style: const TextStyle(
-                        fontSize: 20,
-                        color: Colors.white,
-                      ),
-                    ),
-                    Text(
-                      item.category_description.toString(),
-                      style: const TextStyle(
-                        fontSize: 15,
-                        color: Colors.white,
-                      ),
-                    ),
-                    Text(
-                      item.category_rules,
-                      style: const TextStyle(
-                        fontSize: 15,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ],
-                ),
-                  Icon(Icons.arrow_right)
-              ]
+          const Text(
+            'Categorias',
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: Colors.white70,
             ),
-          )
+          ),
+          const SizedBox(height: 16.0),
+          ListView.separated(
+            physics: const NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            itemCount: categories.length,
+            separatorBuilder: (context, index) => Divider(
+              color: Colors.grey.shade600,
+              height: 1,
+            ),
+            itemBuilder: (context, index) {
+              final item = categories[index];
+              return CategoryItemWidget(
+                item: item,
+                competition: competition,
+              );
+            },
+          ),
         ],
       ),
-    ),
-  );
+    );
+  }
+}
+
+/// Widget individual de item de categoria.
+class CategoryItemWidget extends StatelessWidget {
+  final CategoriesModel item;
+  final CompetitionsModel competition;
+
+  const CategoryItemWidget({
+    Key? key,
+    required this.item,
+    required this.competition,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                item.category_name,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+              Text(
+                item.category_rules,
+                style: const TextStyle(
+                  fontSize: 14,
+                  color: Colors.white70,
+                ),
+              ),
+            ],
+          ),
+          GestureDetector(
+            onTap: () {
+              if (item.category_id == 1 || item.category_id == 4) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => TimeTrialsPage(
+                      Competiotion: competition,
+                      Category: item,
+                    ),
+                  ),
+                );
+              } else {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => MatchsPage(
+                      Category: item,
+                      Competiotion: competition,
+                    ),
+                  ),
+                );
+              }
+            },
+            child: GradientText(
+              'Visualizar',
+              gradient: const LinearGradient(
+                colors: [Colors.blue, Colors.lightBlueAccent],
+              ),
+              style: const TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Widget personalizado para texto com gradiente.
+class GradientText extends StatelessWidget {
+  final String text;
+  final TextStyle style;
+  final Gradient gradient;
+
+  const GradientText(
+    this.text, {
+    Key? key,
+    required this.gradient,
+    required this.style,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ShaderMask(
+      shaderCallback: (bounds) {
+        return gradient.createShader(
+          Rect.fromLTWH(0, 0, bounds.width, bounds.height),
+        );
+      },
+      child: Text(
+        text,
+        style: style.copyWith(
+          color: Colors.white, // A cor é ignorada por causa do ShaderMask
+        ),
+      ),
+    );
+  }
 }

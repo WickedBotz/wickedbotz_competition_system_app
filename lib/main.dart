@@ -16,6 +16,8 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -27,6 +29,8 @@ class MyApp extends StatelessWidget {
 }
 
 class SplashScreen extends StatefulWidget {
+  const SplashScreen({super.key});
+
   @override
   _SplashScreenState createState() => _SplashScreenState();
 }
@@ -45,10 +49,10 @@ class _SplashScreenState extends State<SplashScreen> {
       builder: (context, snapshot) {
         // Enquanto o Future ainda está carregando, exibe o CircularProgressIndicator
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator());
         } else if (snapshot.hasError) {
           // Em caso de erro, exibe uma mensagem
-          return Center(child: Text("Erro ao verificar token"));
+          return const Center(child: Text("Erro ao verificar token"));
         } else {
           // Se o snapshot tem dados, realiza a navegação com base no resultado
           bool isValidToken = snapshot.data ?? false;
@@ -56,7 +60,7 @@ class _SplashScreenState extends State<SplashScreen> {
             // Redireciona para CompetitionsPage se o token for válido
             Future.microtask(() {
               Navigator.pushReplacement(context,
-                  MaterialPageRoute(builder: (context) => CompetitionsPage()));
+                  MaterialPageRoute(builder: (context) => const CompetitionsPage()));
             });
           } else {
             // Redireciona para LoginPage se o token for inválido

@@ -4,6 +4,7 @@ import 'package:app_jurados/pages/stores/robots_by_category_store.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../widgets/sidebar_widget.dart'; 
 
 import '../data/models/user_model.dart';
 import '../data/provider/user_provider.dart';
@@ -21,6 +22,8 @@ class _RobotsByCategoryPage extends State<RobotsByCategoryPage>{
   late RobotsByCategoryStore store;
   late UserModel user;
 
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   void initState(){
     super.initState();
@@ -35,7 +38,7 @@ class _RobotsByCategoryPage extends State<RobotsByCategoryPage>{
 
     store = RobotsByCategoryStore(
       repository: RobotsByCategoryRepository(
-        client: HttpClient(), token: user!.token,
+        client: HttpClient(), token: user.token,
       ),
     );
 
@@ -45,29 +48,46 @@ class _RobotsByCategoryPage extends State<RobotsByCategoryPage>{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+     key: _scaffoldKey,
+      endDrawer: CustomSidebar(),
       appBar: AppBar(
         elevation: 10,
-        backgroundColor: Colors.grey[800],
-        leading: Container(
-          margin: const EdgeInsets.all(10),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(50),
-            border: Border.all(color: Colors.grey.shade900),
-            image: const DecorationImage(
-              image: NetworkImage('https://images.ctfassets.net/cnu0m8re1exe/6fVCq8MwHs552WbNadncGb/1bd5a233597acb5485c691c8110270b2/shutterstock_710379334.jpg?fm=jpg&fl=progressive&w=660&h=433&fit=fill'),
-              fit: BoxFit.cover,
+        backgroundColor: const Color.fromARGB(255, 26, 26, 26),
+        leading: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            GestureDetector(
+              onTap: () {
+                Navigator.pop(context);
+              },
+              child: Container(
+                margin: const EdgeInsets.all(15),
+                decoration: BoxDecoration(
+                  color: Colors.transparent,
+                  borderRadius: BorderRadius.circular(5),
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Colors.black12,
+                      blurRadius: 2,
+                      spreadRadius: 4,
+                    ),
+                  ],
+                ),
+                child: Icon(
+                  Icons.arrow_back,
+                  color: Theme.of(context).iconTheme.color,
+                  size: 26,
+                ),
+              ),
             ),
-          ),
-        ),
-        title: Text(
-          'Logged in as: ${user?.name}',
-          style: Theme.of(context).textTheme.titleMedium,
+          ],
         ),
         actions: [
           IconButton(
-            onPressed: () {
-              Navigator.pop(context);
-              },
+            onPressed: () => {
+              _scaffoldKey.currentState!.openEndDrawer()
+            },
             icon: const Icon(Icons.menu, color: Colors.white),
           ),
         ],
@@ -104,11 +124,6 @@ class _RobotsByCategoryPage extends State<RobotsByCategoryPage>{
                     final item = store.state.value[index];
                     return Column(
                       children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(16),
-                          //child: Image.network(item.lf_photo),
-                          child: Image.network('https://images.ctfassets.net/cnu0m8re1exe/6fVCq8MwHs552WbNadncGb/1bd5a233597acb5485c691c8110270b2/shutterstock_710379334.jpg?fm=jpg&fl=progressive&w=660&h=433&fit=fill'),
-                        ),
                         ListTile(
                           contentPadding: EdgeInsets.zero,
                           title: Text(item.robot_name),

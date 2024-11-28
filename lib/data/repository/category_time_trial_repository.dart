@@ -20,7 +20,7 @@ class CategoryTimeTrialRepository implements ICategoryTimeTrialRepository {
   Future<List<CategoryTimeTrialModel>> getRobotsTimeTrial({required int category_id}) async {
 
     final response = await client.get(
-      url: 'http://10.0.2.2:5000/robots/category/${category_id}',
+      url: 'http://192.168.0.37:5000/robots/category/$category_id',
       headers: token != null ? {'Authorization': 'Bearer $token'} : null, // Adiciona o token se não for nulo
     );
 

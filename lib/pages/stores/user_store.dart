@@ -14,7 +14,7 @@ class UserStore {
 
   Future loginRequest({required String username, required String password}) async{
 
-    print('Login request: ${username} : ${password}');
+    print('Login request: $username : $password');
 
     try{
       final result = await repository.loginRequest(username: username, password: password);

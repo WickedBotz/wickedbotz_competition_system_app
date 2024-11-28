@@ -9,6 +9,7 @@ import '../data/models/competitions_model.dart';
 import '../data/models/user_model.dart';
 import '../data/provider/user_provider.dart';
 import '../widgets/gradient_button_widget.dart';
+import '../widgets/sidebar_widget.dart';
 
 class CombatMatchPage extends StatefulWidget {
   final CategoryMatchModel Match;
@@ -24,8 +25,9 @@ class CombatMatchPage extends StatefulWidget {
 class _CombatMatchPage extends State<CombatMatchPage> {
   late UserModel user;
   final _formKey = GlobalKey<FormState>();
-  final robot1Controller = TextEditingController();
-  final robot2Controller = TextEditingController();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  final robot1Controller = TextEditingController(text: '0');
+  final robot2Controller = TextEditingController(text: '0');
   int? winner;
 
   @override
@@ -38,16 +40,20 @@ class _CombatMatchPage extends State<CombatMatchPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: buildAppBar(),
+      key: _scaffoldKey,
+      endDrawer: CustomSidebar(),
+      appBar: buildAppBar(context, _scaffoldKey),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(10),
         child: Form(
           key: _formKey,
           child: Column(
             children: [
-              buildInfoContainer(),
+              buildCombatContainer(
+                  widget.Match.robot_1_name, widget.Match.team_1_name, robot1Controller, Colors.blue, widget.Match.robot_1_id),
               const SizedBox(height: 20),
-              buildWinnerField(),
+              buildCombatContainer(
+                  widget.Match.robot_2_name, widget.Match.team_2_name, robot2Controller, Colors.red, widget.Match.robot_2_id),
               const SizedBox(height: 20),
               BuildGradientButtonWidget(
                 text: 'Enviar',
@@ -70,176 +76,154 @@ class _CombatMatchPage extends State<CombatMatchPage> {
     );
   }
 
-  AppBar buildAppBar() {
+  AppBar buildAppBar(BuildContext context, GlobalKey<ScaffoldState> scaffoldKey) {
     return AppBar(
       elevation: 10,
-      backgroundColor: Colors.grey[800],
-      leading: Container(
-        margin: const EdgeInsets.all(10),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(50),
-          border: Border.all(color: Colors.grey.shade900),
-          image: const DecorationImage(
-            image: NetworkImage(
-                'https://images.ctfassets.net/cnu0m8re1exe/6fVCq8MwHs552WbNadncGb/1bd5a233597acb5485c691c8110270b2/shutterstock_710379334.jpg?fm=jpg&fl=progressive&w=660&h=433&fit=fill'),
-            fit: BoxFit.cover,
+      backgroundColor: const Color.fromARGB(255, 26, 26, 26),
+      leading: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          GestureDetector(
+            onTap: () {
+              Navigator.pop(context);
+            },
+            child: Container(
+              margin: const EdgeInsets.all(15),
+              decoration: BoxDecoration(
+                color: Colors.transparent,
+                borderRadius: BorderRadius.circular(5),
+                boxShadow: const [
+                  BoxShadow(
+                    color: Colors.black12,
+                    blurRadius: 2,
+                    spreadRadius: 4,
+                  ),
+                ],
+              ),
+              child: Icon(
+                Icons.arrow_back,
+                color: Theme.of(context).iconTheme.color,
+                size: 26,
+              ),
+            ),
           ),
-        ),
-      ),
-      title: Text(
-        'Logged in as: ${user.name}',
-        style: Theme.of(context).textTheme.titleMedium,
+        ],
       ),
       actions: [
         IconButton(
-          onPressed: () => Navigator.pop(context),
+          onPressed: () => scaffoldKey.currentState!.openEndDrawer(),
           icon: const Icon(Icons.menu, color: Colors.white),
         ),
       ],
     );
   }
 
-  Widget buildInfoContainer() {
+  Widget buildCombatContainer(
+      String robotName, String teamName, TextEditingController controller, Color borderColor, int robotId) {
     return Container(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          Container(
-            padding: EdgeInsets.all(10),
-            color: Colors.blueGrey,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Row(
-                  children: [
-                    Container(
-                      height: 80.0,
-                      width: 80.0,
-                      margin: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey.shade900),
-                        image: const DecorationImage(
-                          image: NetworkImage(
-                              'https://images.ctfassets.net/cnu0m8re1exe/6fVCq8MwHs552WbNadncGb/1bd5a233597acb5485c691c8110270b2/shutterstock_710379334.jpg?fm=jpg&fl=progressive&w=660&h=433&fit=fill'),
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ),
-                    SizedBox(width: 10,),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('Robot: ${widget.Match.robot_1_name}', style: const TextStyle(color: Colors.white)),
-                        Text('Team: ${widget.Match.team_1_name}', style: const TextStyle(color: Colors.white)),
-                      ],
-                    )
-                  ],
-                ),
-                TextFormField(
-                  controller: robot1Controller,
-                  keyboardType: TextInputType.numberWithOptions(decimal: true),
-                  inputFormatters: [
-                    FilteringTextInputFormatter.allow(RegExp(r'^[0-9.]*$')),
-                  ],
-                  decoration: InputDecoration(
-                    icon: const Icon(Icons.timer_outlined),
-                    hintText: 'ex: 15.04',
-                    labelText: 'Pontos ${widget.Match.robot_1_name}',
-                  ),
-                ),
-              ],
-            ),
-          ),
-          SizedBox(height: 20,),
-          Container(
-            padding: EdgeInsets.all(10),
-            color: Colors.blueGrey,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Row(
-                  children: [
-                    Container(
-                      height: 80.0,
-                      width: 80.0,
-                      margin: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey.shade900),
-                        image: const DecorationImage(
-                          image: NetworkImage(
-                              'https://images.ctfassets.net/cnu0m8re1exe/6fVCq8MwHs552WbNadncGb/1bd5a233597acb5485c691c8110270b2/shutterstock_710379334.jpg?fm=jpg&fl=progressive&w=660&h=433&fit=fill'),
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ),
-                    SizedBox(width: 10,),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('Robot: ${widget.Match.robot_2_name}', style: const TextStyle(color: Colors.white)),
-                        Text('Team: ${widget.Match.team_2_name}', style: const TextStyle(color: Colors.white)),
-                      ],
-                    )
-                  ],
-                ),
-                TextFormField(
-                  controller: robot2Controller,
-                  keyboardType: TextInputType.numberWithOptions(decimal: true),
-                  inputFormatters: [
-                    FilteringTextInputFormatter.allow(RegExp(r'^[0-9.]*$')),
-                  ],
-                  decoration: InputDecoration(
-                    icon: const Icon(Icons.timer_outlined),
-                    hintText: 'ex: 15.04',
-                    labelText: 'Pontos ${widget.Match.robot_2_name}',
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
+      padding: const EdgeInsets.all(16),
+      margin: const EdgeInsets.symmetric(horizontal: 10),
+      decoration: BoxDecoration(
+        color: Colors.black12, // Fundo escuro
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: borderColor,
+          width: 3, // Espessura da borda
+        ),
       ),
-    );
-  }
-
-  Widget buildWinnerField() {
-    return Padding(
-      padding: const EdgeInsets.all(10),
       child: Column(
         children: [
-          const Text('Selecione o Vencedor:'),
+          Text(
+            'Robô: $robotName',
+            style: const TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
+          ),
+          Text(
+            'Equipe: $teamName',
+            style: const TextStyle(color: Colors.white70, fontSize: 16),
+          ),
           const SizedBox(height: 10),
           Container(
-            height: 50,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                Radio<int>(
-                  value: widget.Match.robot_1_id,
-                  groupValue: winner,
-                  activeColor: Colors.green,
-                  onChanged: (value) => setState(() => winner = value!),
-                ),
-                Text(widget.Match.robot_1_name),
-              ],
+            height: 80,
+            width: 80,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              image: DecorationImage(
+                image: const NetworkImage(
+                    'https://images.ctfassets.net/cnu0m8re1exe/6fVCq8MwHs552WbNadncGb/1bd5a233597acb5485c691c8110270b2/shutterstock_710379334.jpg?fm=jpg&fl=progressive&w=660&h=433&fit=fill'),
+                fit: BoxFit.cover,
+              ),
             ),
           ),
-          const SizedBox(height: 5),
-          Container(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                Radio<int>(
-                  value: widget.Match.robot_2_id,
-                  groupValue: winner,
-                  activeColor: Colors.green,
-                  onChanged: (value) => setState(() => winner = value!),
+          const SizedBox(height: 20),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              IconButton(
+                iconSize: 48, // Aumentar o tamanho do botão "-"
+                icon: const Icon(Icons.remove, color: Colors.white),
+                onPressed: () {
+                  setState(() {
+                    int currentValue = int.parse(controller.text);
+                    if (currentValue > 0) {
+                      currentValue--;
+                      controller.text = currentValue.toString();
+                    }
+                  });
+                },
+              ),
+              SizedBox(
+                width: 90, // Aumentar a largura do campo de pontos
+                height: 60, // Aumentar a altura do campo de pontos
+                child: TextFormField(
+                  controller: controller,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(color: Colors.white, fontSize: 32),
+                  keyboardType: TextInputType.number,
+                  inputFormatters: [
+                    FilteringTextInputFormatter.digitsOnly,
+                  ],
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(color: Colors.white.withOpacity(0.5)),
+                    ),
+                    filled: true,
+                    fillColor: Colors.grey[850], // Fundo escuro do input
+                    focusColor: Colors.grey, // Cor do cursor
+                  ),
+                  onChanged: (value) {
+                    setState(() {});
+                  },
                 ),
-                Text(widget.Match.robot_2_name),
-              ],
+              ),
+              IconButton(
+                iconSize: 48, // Aumentar o tamanho do botão "+"
+                icon: const Icon(Icons.add, color: Colors.white),
+                onPressed: () {
+                  setState(() {
+                    int currentValue = int.parse(controller.text);
+                    currentValue++;
+                    controller.text = currentValue.toString();
+                  });
+                },
+              ),
+            ],
+          ),
+          RadioListTile<int>(
+            value: robotId,
+            groupValue: winner,
+            activeColor: Colors.green,
+            title: Text(
+              'Selecionar $robotName',
+              style: const TextStyle(color: Colors.white),
+              textAlign: TextAlign.center,
             ),
+            onChanged: (value) {
+              setState(() {
+                winner = value!;
+              });
+            },
           ),
         ],
       ),
@@ -248,7 +232,7 @@ class _CombatMatchPage extends State<CombatMatchPage> {
 
   Future<void> _showConfirmationDialog() async {
     bool sendValues = false;
-    final _winner = winner == widget.Match.robot_1_id
+    final winnerName = winner == widget.Match.robot_1_id
         ? widget.Match.robot_1_name
         : widget.Match.robot_2_name;
 
@@ -263,10 +247,10 @@ class _CombatMatchPage extends State<CombatMatchPage> {
               children: [
                 Text('${widget.Match.robot_1_name} ${robot1Controller.text} Pontos'),
                 Text('${widget.Match.robot_2_name} ${robot2Controller.text} Pontos'),
-                SizedBox(height: 10,),
-                Text('Vencedor:'),
-                Text(_winner),
-                SizedBox(height: 20,),
+                const SizedBox(height: 10),
+                const Text('Vencedor:'),
+                Text(winnerName),
+                const SizedBox(height: 20),
                 Row(
                   children: [
                     Checkbox(
@@ -280,32 +264,37 @@ class _CombatMatchPage extends State<CombatMatchPage> {
               ],
             ),
             actions: [
-              BuildGradientButtonWidget(
-                text: 'Enviar',
-                onPressed: () async {
-                  if(sendValues){
-                    final sent = await sendFormValues();
+              SizedBox(
+                width: 100, // Reduzir tamanho do botão Enviar
+                child: BuildGradientButtonWidget(
+                  text: 'Enviar',
+                  onPressed: () async {
+                    if (sendValues) {
+                      final sent = await sendFormValues();
+                      Navigator.pop(context);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text(sent ? 'Dados Enviados com Sucesso' : 'Erro ao enviar os dados')),
+                      );
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Confirme os valores')),
+                      );
+                    }
+                  },
+                ),
+              ),
+              const SizedBox(height: 20),
+              SizedBox(
+                width: 100, // Reduzir tamanho do botão Cancelar
+                child: BuildGradientButtonWidget(
+                  text: 'Cancelar',
+                  onPressed: () {
                     Navigator.pop(context);
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text(sent ? 'Dados Enviados com Sucesso' : 'Erro ao enviar os dados')),
+                      const SnackBar(content: Text('Envio Cancelado')),
                     );
-                  }else{
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Confirme os valores')),
-                    );
-                  }
-                },
-              ),
-              SizedBox(height: 20,),
-              BuildGradientButtonWidget(
-                text: 'Cancelar',
-                onPressed: () {
-                  Navigator.pop(context);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Envio Cancelado')),
-                  );
-                },
-
+                  },
+                ),
               ),
             ],
           ),
@@ -323,18 +312,19 @@ class _CombatMatchPage extends State<CombatMatchPage> {
       'robot_1': widget.Match.robot_1_id,
       'robot_2': widget.Match.robot_2_id,
       'category_id': widget.Category.category_id,
-      'sequence':widget.Match.sequence,
+      'sequence': widget.Match.sequence,
       'current': widget.Match.current,
-      'judge_id': user.id
+      'judge_id': user.id,
+      'robot_1_points': int.parse(robot1Controller.text),
+      'robot_2_points': int.parse(robot2Controller.text),
     });
 
     final response = await client.put(
-      url: 'http://10.0.2.2:5000/matches/${widget.Match.match_id}',
+      url: 'http://192.168.0.37:5000/matches/${widget.Match.match_id}',
       headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer $token'},
       body: body,
     );
 
-
-    return response.statusCode == 201 ? true : false;
+    return response.statusCode == 201;
   }
 }
