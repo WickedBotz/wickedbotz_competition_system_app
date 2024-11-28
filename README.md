@@ -6,5 +6,5 @@ A new Flutter project.
 
 This project is a starting point for a Flutter application.
 
-# Falta implementar autenticação
-É necessário a API executando localmente
+
+#É necessário a API executando localmente
