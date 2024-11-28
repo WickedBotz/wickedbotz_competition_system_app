@@ -1,24 +1,23 @@
-import 'package:app_jurados/data/models/competitions_model.dart';
-import 'package:app_jurados/data/repository/competitions_repository.dart';
 import 'package:flutter/cupertino.dart';
-
 import '../../data/http/exceptions.dart';
+import '../../data/models/categoties_model.dart';
+import '../../data/repository/categories_repository.dart';
 
-class CompetitionsStore {
-  final ICompetitionsRepository repository;
+class CompetiotionCategoriesStore {
+  final ICompetitionCategoriesRepository repository;
 
   // variaveis reativas do estado da requisiçao
   final ValueNotifier<bool> isLoading = ValueNotifier<bool>(false);
-  final ValueNotifier<List<CompetitionsModel>> state = ValueNotifier<List<CompetitionsModel>>([]);
+  final ValueNotifier<List<CategoriesModel>> state = ValueNotifier<List<CategoriesModel>>([]);
   final ValueNotifier<String> erro = ValueNotifier<String>('');
 
-  CompetitionsStore({required this.repository});
+  CompetiotionCategoriesStore({required this.repository});
 
-  Future getCompetitions() async{
+  Future getCategories() async{
     isLoading.value = true;
 
     try{
-      final result = await repository.getCompetitions();
+      final result = await repository.getCategories();
       state.value = result;
     } on NotFoundException catch (e){
       print('Unexpected error result');

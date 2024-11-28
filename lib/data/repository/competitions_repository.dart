@@ -9,30 +9,38 @@ abstract class ICompetitionsRepository{
   Future<List<CompetitionsModel>> getCompetitions();
 }
 
-class CompetitionsRepository implements ICompetitionsRepository{
+class CompetitionsRepository implements ICompetitionsRepository {
   final IHttpClient client;
+  final String token;
 
-  CompetitionsRepository({required this.client});
+  CompetitionsRepository({required this.client, required this.token});
 
   @override
   Future<List<CompetitionsModel>> getCompetitions() async {
-    final response = await client.get(url: 'http://127.0.0.1:5000/competitions');
-    if(response.statusCode == 200){
-      final List<CompetitionsModel> competitions = [];
+    // SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    // String? token = sharedPreferences.getString('auth_token');
 
+    print('Token: $token');
+    final response = await client.get(
+      url: 'http://192.168.0.37:5000/competitions',
+      headers: token != null ? {'Authorization': 'Bearer $token'} : null,
+    );
+
+    if (response.statusCode == 200) {
+      final List<CompetitionsModel> competitions = [];
       final body = jsonDecode(response.body);
-      body['competitions'].map((item) {
-        final CompetitionsModel lf = CompetitionsModel.fromMap(item);
-        competitions.add(lf);
-      }).toList();
+
+      body['competitions'].forEach((item) {
+        final CompetitionsModel competition = CompetitionsModel.fromMap(item);
+        competitions.add(competition);
+      });
 
       return competitions;
-    }else if(response.statusCode == 404){
+    } else if (response.statusCode == 404) {
+      final body = jsonDecode(response.body);
       throw NotFoundException('Erro ao interpretar resposta');
-    }else{
+    } else {
       throw Exception('Erro ...');
     }
   }
-
-
 }

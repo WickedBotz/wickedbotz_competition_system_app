@@ -2,7 +2,10 @@ import 'package:app_jurados/data/http/http_client.dart';
 import 'package:app_jurados/data/repository/competitions_repository.dart';
 import 'package:app_jurados/pages/stores/competitions_store.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../widgets/sidebar_widget.dart'; // Make sure this import is correct
 
+import '../data/provider/user_provider.dart';
 import '../themes/app_theme.dart';
 import '../widgets/competition_item_widget.dart';
 
@@ -14,82 +17,99 @@ class CompetitionsPage extends StatefulWidget {
 }
 
 class _CompetitionsPage extends State<CompetitionsPage> {
-  final CompetitionsStore store = CompetitionsStore(
-    repository: CompetitionsRepository(
-      client: HttpClient(),
-    ),
-  );
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  late CompetitionsStore store;
 
   @override
-  void initState() {
-    super.initState();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final user = Provider.of<UserProvider>(context, listen: false).user;
+
+    store = CompetitionsStore(
+      repository: CompetitionsRepository(
+        client: HttpClient(),
+        token: user!.token,
+      ),
+    );
+
     store.getCompetitions();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
+      endDrawer: CustomSidebar(),
       appBar: AppBar(
         elevation: 10,
-        backgroundColor: Colors.grey[800],
+        backgroundColor: const Color.fromARGB(255, 26, 26, 26),
         leading: Container(
           margin: const EdgeInsets.all(10),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(50),
             border: Border.all(color: Colors.grey.shade900),
-            //shape: BoxShape.circle,
             image: const DecorationImage(
-              // improvisado, substiuir quando atualizar DB da API
-              image: NetworkImage('https://images.ctfassets.net/cnu0m8re1exe/6fVCq8MwHs552WbNadncGb/1bd5a233597acb5485c691c8110270b2/shutterstock_710379334.jpg?fm=jpg&fl=progressive&w=660&h=433&fit=fill'),
+              image: AssetImage('image-removebg-preview.png'),
+              scale: 2.5,
               fit: BoxFit.cover,
             ),
           ),
         ),
-        title: Text('WickedBotz',
-          style: Theme.of(context).textTheme.titleMedium
-          ,
+        title: Text(
+          'Meus Eventos',
+          style: Theme.of(context).textTheme.titleMedium,
         ),
         actions: [
-          IconButton(onPressed: () => {}, icon:  const Icon(Icons.menu, color: Colors.white,))
+          IconButton(
+            onPressed: () {
+              _scaffoldKey.currentState!.openEndDrawer();
+            },
+            icon: const Icon(
+              Icons.menu,
+              color: Colors.white,
+            ),
+          ),
         ],
       ),
       body: Container(
-        // Aqui, você define o gradiente
-        decoration: Theme.of(context).extension<GradientContainerTheme>()!.gradientDecoration!,
+        decoration: Theme.of(context)
+            .extension<GradientContainerTheme>()!
+            .gradientDecoration!,
         child: AnimatedBuilder(
-            animation: Listenable.merge([
-              store.isLoading,
-              store.erro,
-              store.state,
-            ]),
-            builder: (context, child) {
-              if (store.isLoading.value) {
-                return const CircularProgressIndicator();
-              }
-              if (store.erro.value.isNotEmpty) {
-                print('Erro');
-                return Center(
-                  child: Text(store.erro.value),
-                );
-              }
-              if (store.state.value.isEmpty) {
-                return const Center(
-                  child: Text('Nemhum dado encontrado'),
-                );
-              } else {
-                return ListView.separated(
-                  separatorBuilder: (context, index) => const SizedBox(
-                    height: 32,
-                  ),
-                  padding: const EdgeInsets.all(16),
-                  itemCount: store.state.value.length,
-                  itemBuilder: (_, index) {
-                    final item = store.state.value[index];
-                    return CompetitionItemWidget(item: item);
-                  },
-                );
-              }
-            }),
+          animation: Listenable.merge([
+            store.isLoading,
+            store.erro,
+            store.state,
+          ]),
+          builder: (context, child) {
+            if (store.isLoading.value) {
+              return const Center(child: CircularProgressIndicator());
+            }
+            if (store.erro.value.isNotEmpty) {
+              print('Erro ${store.erro.value}');
+              return Center(
+                child: Text(store.erro.value),
+              );
+            }
+            if (store.state.value.isEmpty) {
+              return const Center(
+                child: Text('Nenhum dado encontrado'),
+              );
+            } else {
+              return ListView.separated(
+                separatorBuilder: (context, index) => const SizedBox(
+                  height: 32,
+                ),
+                padding: const EdgeInsets.all(16),
+                itemCount: store.state.value.length,
+                itemBuilder: (_, index) {
+                  final item = store.state.value[index];
+                  return CompetitionItemWidget(context: context, item: item);
+                },
+              );
+            }
+          },
+        ),
       ),
     );
   }
