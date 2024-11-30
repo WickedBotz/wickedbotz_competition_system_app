@@ -7,8 +7,8 @@ import '../data/models/user_model.dart';
 import '../data/provider/user_provider.dart';
 import '../data/repository/user_repository.dart';
 import '../themes/app_theme.dart';
-import '../widgets/gradient_button_widget.dart';
 import 'competitions_page.dart';
+import '../components/ButtonGradient.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -33,7 +33,11 @@ class _LoginPageState extends State<LoginPage> {
           Container(
             decoration: const BoxDecoration(
               gradient: LinearGradient(
-                colors: [Color(0xff000000), Color(0xff245C6B), Color(0xff0CFFFD)],
+                colors: [
+                  Color(0xff000000),
+                  Color(0xff245C6B),
+                  Color(0xff0CFFFD)
+                ],
                 stops: [0.75, 1, 0.5],
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
@@ -41,9 +45,12 @@ class _LoginPageState extends State<LoginPage> {
             ),
           ),
           BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10), // Ajuste os valores de sigma conforme necessário
+            filter: ImageFilter.blur(
+                sigmaX: 10,
+                sigmaY: 10), // Ajuste os valores de sigma conforme necessário
             child: Container(
-              color: Colors.black.withOpacity(0.7), // Necessário para o BackdropFilter funcionar
+              color: Colors.black.withOpacity(
+                  0.7), // Necessário para o BackdropFilter funcionar
             ),
           ),
           // Conteúdo do login
@@ -74,7 +81,7 @@ class _LoginPageState extends State<LoginPage> {
             const SizedBox(height: 20),
             Text(
               'Bem-Vindo',
-              style: Theme.of(context).textTheme.titleLarge,
+              style: Theme.of(context).textTheme.titleMedium,
             ),
             const SizedBox(height: 20),
             Form(
@@ -89,7 +96,9 @@ class _LoginPageState extends State<LoginPage> {
                     controller: email_controller,
                     keyboardType: TextInputType.emailAddress,
                     validator: (email) {
-                      if (email == null || email.isEmpty) return 'E-mail inválido';
+                      if (email == null || email.isEmpty) {
+                        return 'E-mail inválido';
+                      }
                       return null;
                     },
                   ),
@@ -102,7 +111,9 @@ class _LoginPageState extends State<LoginPage> {
                     controller: password_controller,
                     keyboardType: TextInputType.text,
                     validator: (senha) {
-                      if (senha == null || senha.isEmpty) return 'Senha inválida';
+                      if (senha == null || senha.isEmpty) {
+                        return 'Senha inválida';
+                      }
                       if (senha.length < 3) return 'Senha inválida';
                       return null;
                     },
@@ -112,26 +123,32 @@ class _LoginPageState extends State<LoginPage> {
             ),
             const SizedBox(height: 20),
             FractionallySizedBox(
-              widthFactor: 0.57,
-              child: BuildGradientButtonWidget(
-                text: 'Entrar',
-                onPressed: () async {
-                  if (form_key.currentState!.validate()) {
-                    bool loginSuccess = await loginSuccessfully();
-                    if (loginSuccess) {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(builder: (context) => const CompetitionsPage()),
-                      );
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Erro ao fazer login')),
-                      );
+                widthFactor: 0.55,
+                child: ButtonGradient(
+                  text: 'Entrar',
+                  onPressed: () async {
+                    if (form_key.currentState!.validate()) {
+                      bool loginSuccess = await loginSuccessfully();
+                      if (loginSuccess) {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const CompetitionsPage()),
+                        );
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Erro ao fazer login')),
+                        );
+                      }
                     }
-                  }
-                },
-              ),
-            ),
+                  },
+                  gradient: const LinearGradient(
+                    colors: [
+                      Color(0xff53dae3),
+                      Color(0xff297fff),
+                    ],
+                  ),
+                )),
           ],
         ),
       ),
@@ -140,7 +157,8 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<bool> loginSuccessfully() async {
     HttpClient client = HttpClient();
-    final UserStore store = UserStore(repository: UserRepository(client: client));
+    final UserStore store =
+        UserStore(repository: UserRepository(client: client));
     await store.loginRequest(
       username: email_controller.text,
       password: password_controller.text,
@@ -166,8 +184,6 @@ class _LoginPageState extends State<LoginPage> {
   }) {
     return FractionallySizedBox(
       widthFactor: 0.57,
-      child: DecoratedBox(
-        decoration: Theme.of(context).extension<GradientContainerTheme>()!.gradientDecoration!,
         child: Padding(
           padding: const EdgeInsets.all(3.0),
           child: TextFormField(
@@ -177,7 +193,8 @@ class _LoginPageState extends State<LoginPage> {
             decoration: InputDecoration(
               hintText: hintText,
               hintStyle: Theme.of(context).textTheme.labelMedium,
-              prefixIcon: Icon(prefixIcon, color: const Color.fromARGB(136, 153, 151, 151)),
+              prefixIcon: Icon(prefixIcon,
+                  color: const Color.fromARGB(136, 153, 151, 151)),
               filled: true,
               fillColor: const Color.fromARGB(255, 14, 14, 14),
               border: OutlineInputBorder(
@@ -199,7 +216,6 @@ class _LoginPageState extends State<LoginPage> {
             validator: validator,
           ),
         ),
-      ),
-    );
+      );
   }
 }

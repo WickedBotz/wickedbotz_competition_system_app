@@ -1,4 +1,8 @@
 import 'dart:convert';
+import 'package:app_jurados/components/ButtonGradient.dart';
+import 'package:app_jurados/components/ConfirmDialog.dart';
+import 'package:app_jurados/components/TruncateText.dart';
+import 'package:app_jurados/themes/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../data/http/http_client.dart';
@@ -7,7 +11,7 @@ import '../data/models/categoties_model.dart';
 import '../data/models/competitions_model.dart';
 import '../data/models/user_model.dart';
 import '../data/provider/user_provider.dart';
-import '../widgets/gradient_button_widget.dart';
+
 import '../widgets/sidebar_widget.dart';
 
 class PursuitMatchPage extends StatefulWidget {
@@ -15,7 +19,11 @@ class PursuitMatchPage extends StatefulWidget {
   final CompetitionsModel Competiotion;
   final CategoriesModel Category;
 
-  const PursuitMatchPage({super.key, required this.Match, required this.Competiotion, required this.Category});
+  const PursuitMatchPage(
+      {super.key,
+      required this.Match,
+      required this.Competiotion,
+      required this.Category});
 
   @override
   State<PursuitMatchPage> createState() => _PursuitMatchPage();
@@ -38,7 +46,7 @@ class _PursuitMatchPage extends State<PursuitMatchPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      endDrawer: CustomSidebar(),
+      endDrawer: const CustomSidebar(),
       appBar: buildAppBar(context, _scaffoldKey),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(10),
@@ -51,16 +59,17 @@ class _PursuitMatchPage extends State<PursuitMatchPage> {
               buildWinnerField(),
               const SizedBox(height: 20),
               SizedBox(
-                width: 150, // Definindo um tamanho menor para o botão "Enviar"
-                child: BuildGradientButtonWidget(
+                width: 300,
+                child: ButtonGradient(
                   text: 'Enviar',
                   onPressed: () async {
-                    FocusScope.of(context).requestFocus(FocusNode());
                     if (_formKey.currentState!.validate()) {
                       _showConfirmationDialog();
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Formulário Inválido')),
+                        const SnackBar(
+                            content:
+                                Text('Selecione um vencedor antes de enviar')),
                       );
                     }
                   },
@@ -74,7 +83,8 @@ class _PursuitMatchPage extends State<PursuitMatchPage> {
     );
   }
 
-  AppBar buildAppBar(BuildContext context, GlobalKey<ScaffoldState> scaffoldKey) {
+  AppBar buildAppBar(
+      BuildContext context, GlobalKey<ScaffoldState> scaffoldKey) {
     return AppBar(
       elevation: 10,
       backgroundColor: const Color.fromARGB(255, 26, 26, 26),
@@ -126,12 +136,16 @@ class _PursuitMatchPage extends State<PursuitMatchPage> {
             buildRobotInfoContainer(
               widget.Match.robot_1_name,
               'https://images.ctfassets.net/cnu0m8re1exe/6fVCq8MwHs552WbNadncGb/1bd5a233597acb5485c691c8110270b2/shutterstock_710379334.jpg?fm=jpg&fl=progressive&w=660&h=433&fit=fill',
-              winner == widget.Match.robot_1_id ? Colors.blue : Colors.grey.shade800,
+              winner == widget.Match.robot_1_id
+                  ? Colors.blue
+                  : Colors.grey.shade800,
             ),
             buildRobotInfoContainer(
               widget.Match.robot_2_name,
               'https://images.ctfassets.net/cnu0m8re1exe/6fVCq8MwHs552WbNadncGb/1bd5a233597acb5485c691c8110270b2/shutterstock_710379334.jpg?fm=jpg&fl=progressive&w=660&h=433&fit=fill',
-              winner == widget.Match.robot_2_id ? Colors.red : Colors.grey.shade800,
+              winner == widget.Match.robot_2_id
+                  ? Colors.red
+                  : Colors.grey.shade800,
             ),
           ],
         ),
@@ -139,7 +153,8 @@ class _PursuitMatchPage extends State<PursuitMatchPage> {
     );
   }
 
-  Widget buildRobotInfoContainer(String robotName, String imageUrl, Color color) {
+  Widget buildRobotInfoContainer(
+      String robotName, String imageUrl, Color color) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -161,9 +176,9 @@ class _PursuitMatchPage extends State<PursuitMatchPage> {
             ),
           ),
           const SizedBox(height: 10),
-          Text(
-            robotName,
-            style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+          TruncateText(
+            text: robotName,
+            style: Theme.of(context).textTheme.displaySmall,
           ),
         ],
       ),
@@ -178,12 +193,15 @@ class _PursuitMatchPage extends State<PursuitMatchPage> {
         children: [
           const Text(
             'Selecione o Vencedor:',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+            style: TextStyle(
+                fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
           ),
           const SizedBox(height: 20),
-          buildWinnerButton(widget.Match.robot_1_name, widget.Match.robot_1_id, Colors.blue),
+          buildWinnerButton(
+              widget.Match.robot_1_name, widget.Match.robot_1_id, Colors.blue),
           const SizedBox(height: 10),
-          buildWinnerButton(widget.Match.robot_2_name, widget.Match.robot_2_id, Colors.red),
+          buildWinnerButton(
+              widget.Match.robot_2_name, widget.Match.robot_2_id, Colors.red),
         ],
       ),
     );
@@ -209,7 +227,7 @@ class _PursuitMatchPage extends State<PursuitMatchPage> {
         width: MediaQuery.of(context).size.width * 0.8,
         child: Center(
           child: Text(
-            'Robô: $robotName',
+            robotName,
             style: TextStyle(
               color: winner == robotId ? borderColor : Colors.white,
               fontSize: 18,
@@ -221,75 +239,40 @@ class _PursuitMatchPage extends State<PursuitMatchPage> {
     );
   }
 
-  Future<void> _showConfirmationDialog() async {
-    bool sendValues = false;
-    final winnerName = winner == widget.Match.robot_1_id
-        ? widget.Match.robot_1_name
-        : widget.Match.robot_2_name;
 
-    return showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return StatefulBuilder(
-          builder: (context, setState) => AlertDialog(
-            title: const Text('Confirmar?'),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Text('Vencedor:'),
-                Text(winnerName),
-                const SizedBox(height: 20),
-                Row(
-                  children: [
-                    Checkbox(
-                      value: sendValues,
-                      activeColor: Colors.green,
-                      onChanged: (value) => setState(() => sendValues = value!),
-                    ),
-                    const Text('Confirmar'),
-                  ],
-                ),
-              ],
-            ),
-            actions: [
-              SizedBox(
-                width: 100, // Definindo um tamanho menor para o botão "Enviar"
-                child: BuildGradientButtonWidget(
-                  text: 'Enviar',
-                  onPressed: () async {
-                    if (sendValues) {
-                      final sent = await sendFormValues();
-                      Navigator.pop(context);
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text(sent ? 'Dados Enviados com Sucesso' : 'Erro ao enviar os dados')),
-                      );
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Confirme os valores')),
-                      );
-                    }
-                  },
-                ),
-              ),
-              const SizedBox(height: 10),
-              SizedBox(
-                width: 100, // Definindo um tamanho menor para o botão "Cancelar"
-                child: BuildGradientButtonWidget(
-                  text: 'Cancelar',
-                  onPressed: () {
-                    Navigator.pop(context);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Envio Cancelado')),
-                    );
-                  },
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
+_showConfirmationDialog() {
+  final winnerName = winner == widget.Match.robot_1_id
+      ? widget.Match.robot_1_name
+      : widget.Match.robot_2_name;
+
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return ConfirmationDialog(
+        message: 'Você confirma que o vencedor é: $winnerName?', // Mensagem personalizada
+        onConfirm: () async {
+          final success = await sendFormValues();
+          Navigator.pop(context);
+          if (success) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Dados enviados com sucesso')),
+            );
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Erro ao enviar os dados')),
+            );
+          }
+        },
+        onCancel: () {
+          Navigator.pop(context);
+        },
+      );
+    },
+  );
+}
+
+
+
 
   Future<bool> sendFormValues() async {
     final token = user.token;
@@ -305,8 +288,12 @@ class _PursuitMatchPage extends State<PursuitMatchPage> {
     });
 
     final response = await client.put(
-      url: 'http://localhost:5000/matches/${widget.Match.match_id}',
-      headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer $token'},
+      url:
+          'localhost/matches/${widget.Match.match_id}',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token'
+      },
       body: body,
     );
 

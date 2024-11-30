@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../http/exceptions.dart';
 import '../http/http_client.dart';
@@ -20,7 +19,7 @@ class CategoryTimeTrialRepository implements ICategoryTimeTrialRepository {
   Future<List<CategoryTimeTrialModel>> getRobotsTimeTrial({required int category_id}) async {
 
     final response = await client.get(
-      url: 'http://localhost:5000/robots/category/$category_id',
+      url: 'localhost/robots/category/$category_id',
       headers: token != null ? {'Authorization': 'Bearer $token'} : null, // Adiciona o token se não for nulo
     );
 

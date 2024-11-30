@@ -10,10 +10,10 @@ class CategoryListWidget extends StatelessWidget {
   final CompetitionsModel competition;
 
   const CategoryListWidget({
-    Key? key,
+    super.key,
     required this.categories,
     required this.competition,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -27,16 +27,12 @@ class CategoryListWidget extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Categorias',
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: Colors.white70,
+            Text(
+              'Categorias',
+              style: Theme.of(context).textTheme.titleSmall,
             ),
-          ),
-          const SizedBox(height: 16.0),
-          ListView.separated(
+            const SizedBox(height: 17.0),
+            ListView.separated(
             physics: const NeverScrollableScrollPhysics(),
             shrinkWrap: true,
             itemCount: categories.length,
@@ -64,74 +60,74 @@ class CategoryItemWidget extends StatelessWidget {
   final CompetitionsModel competition;
 
   const CategoryItemWidget({
-    Key? key,
+    super.key,
     required this.item,
     required this.competition,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                item.category_name,
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
+    return GestureDetector(
+      onTap: () {
+        if (item.category_id == 1 || item.category_id == 4) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => TimeTrialsPage(
+                Competiotion: competition,
+                Category: item,
               ),
-              Text(
-                item.category_rules,
-                style: const TextStyle(
-                  fontSize: 14,
-                  color: Colors.white70,
-                ),
+            ),
+          );
+        } else {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => MatchsPage(
+                Category: item,
+                Competiotion: competition,
               ),
-            ],
-          ),
-          GestureDetector(
-            onTap: () {
-              if (item.category_id == 1 || item.category_id == 4) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => TimeTrialsPage(
-                      Competiotion: competition,
-                      Category: item,
-                    ),
+            ),
+          );
+        }
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  item.category_name,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
                   ),
-                );
-              } else {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => MatchsPage(
-                      Category: item,
-                      Competiotion: competition,
-                    ),
+                ),
+                Text(
+                  item.category_rules,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    color: Colors.white70,
                   ),
-                );
-              }
-            },
-            child: GradientText(
+                ),
+              ],
+            ),
+            const GradientText(
               'Visualizar',
-              gradient: const LinearGradient(
+              gradient: LinearGradient(
                 colors: [Colors.blue, Colors.lightBlueAccent],
               ),
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.bold,
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -145,10 +141,10 @@ class GradientText extends StatelessWidget {
 
   const GradientText(
     this.text, {
-    Key? key,
+    super.key,
     required this.gradient,
     required this.style,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

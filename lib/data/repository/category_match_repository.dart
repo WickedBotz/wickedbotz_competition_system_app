@@ -17,7 +17,7 @@ class CategoryMatchRepository implements ICategoryMatchRepository {
   Future<List<CategoryMatchModel>> getRobotsMatch({required int category_id}) async {
 
     final response = await client.get(
-      url: 'http://localhost:5000/robots/category/$category_id',
+      url: 'localhost/robots/category/$category_id',
       headers: token != null ? {'Authorization': 'Bearer $token'} : null, // Adiciona o token se não for nulo
     );
 

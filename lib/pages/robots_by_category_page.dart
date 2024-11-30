@@ -49,7 +49,7 @@ class _RobotsByCategoryPage extends State<RobotsByCategoryPage>{
   Widget build(BuildContext context) {
     return Scaffold(
      key: _scaffoldKey,
-      endDrawer: CustomSidebar(),
+      endDrawer: const CustomSidebar(),
       appBar: AppBar(
         elevation: 10,
         backgroundColor: const Color.fromARGB(255, 26, 26, 26),

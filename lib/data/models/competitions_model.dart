@@ -24,7 +24,7 @@ class CompetitionsModel {
       comp_id: map['id'],
       comp_adress_id: map['adreass_id'],
       comp_name: map['name'],
-      comp_date: DateFormat('yyyy-MM-dd').format(parsedDate!)
+      comp_date: DateFormat('dd/MM/yyyy').format(parsedDate!)
     );
   }
 }

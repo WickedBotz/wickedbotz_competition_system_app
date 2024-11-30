@@ -47,7 +47,7 @@ class _CompetitionPage extends State<CompetitionCategoriesPage> {
 
     return Scaffold(
       key: _scaffoldKey,
-      endDrawer: CustomSidebar(),
+      endDrawer: const CustomSidebar(),
       appBar: AppBar(
         elevation: 10,
         backgroundColor: const Color.fromARGB(255, 26, 26, 26),
@@ -92,9 +92,6 @@ class _CompetitionPage extends State<CompetitionCategoriesPage> {
       ),
       body: SingleChildScrollView(
         child: Container(
-          decoration: Theme.of(context)
-              .extension<GradientContainerTheme>()!
-              .gradientDecoration!,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -121,38 +118,27 @@ class _CompetitionPage extends State<CompetitionCategoriesPage> {
                       padding: const EdgeInsets.only(
                           left: 16,
                           right: 16,
-                          top: 80,
+                          top: 68,
                           bottom: 16), // Ajustar espaçamento interno
                       color: Colors.grey[850],
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const SizedBox(height: 7),
                           Text(
                             widget.competiotion_item.comp_name,
-                            style: const TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
+                            style: Theme.of(context).textTheme.headlineSmall,
                           ),
                           const SizedBox(
                               height:
                                   5), // Aumentar espaço entre título e informações
                           Text(
                             'Data: ${widget.competiotion_item.comp_date}',
-                            style: const TextStyle(
-                              fontSize: 16,
-                              color: Colors.white70,
-                            ),
+                            style: Theme.of(context).textTheme.bodySmall
                           ),
                           const SizedBox(height: 2),
                           Text(
                             'Local: ${widget.competiotion_item.comp_adress_id.toString()}',
-                            style: const TextStyle(
-                              fontSize: 16,
-                              color: Colors.white70,
-                            ),
+                            style: Theme.of(context).textTheme.bodySmall
                           ),
                         ],
                       ),
@@ -164,9 +150,9 @@ class _CompetitionPage extends State<CompetitionCategoriesPage> {
                     left: MediaQuery.of(context).size.width * 0.03,
                     child: Container(
                       width: MediaQuery.of(context).size.width /
-                          2.5, // Diminuir o tamanho da imagem
+                          2.3, // Diminuir o tamanho da imagem
                       height: MediaQuery.of(context).size.height /
-                          5.5, // Diminuir a altura da imagem
+                          6.0, // Diminuir a altura da imagem
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
                         image: const DecorationImage(

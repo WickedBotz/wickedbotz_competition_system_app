@@ -22,7 +22,7 @@ class CompetitionsRepository implements ICompetitionsRepository {
 
     print('Token: $token');
     final response = await client.get(
-      url: 'http://localhost:5000/competitions',
+      url: 'localhost/competitions',
       headers: token != null ? {'Authorization': 'Bearer $token'} : null,
     );
 

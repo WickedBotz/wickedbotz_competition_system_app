@@ -1,4 +1,5 @@
 import 'dart:convert';
+import '../components/ButtonGradient.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -8,7 +9,6 @@ import '../data/models/categoties_model.dart';
 import '../data/models/competitions_model.dart';
 import '../data/models/user_model.dart';
 import '../data/provider/user_provider.dart';
-import '../widgets/gradient_button_widget.dart';
 import '../widgets/sidebar_widget.dart';
 
 class CombatMatchPage extends StatefulWidget {
@@ -41,7 +41,7 @@ class _CombatMatchPage extends State<CombatMatchPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      endDrawer: CustomSidebar(),
+      endDrawer: const CustomSidebar(),
       appBar: buildAppBar(context, _scaffoldKey),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(10),
@@ -55,7 +55,7 @@ class _CombatMatchPage extends State<CombatMatchPage> {
               buildCombatContainer(
                   widget.Match.robot_2_name, widget.Match.team_2_name, robot2Controller, Colors.red, widget.Match.robot_2_id),
               const SizedBox(height: 20),
-              BuildGradientButtonWidget(
+              ButtonGradient(
                 text: 'Enviar',
                 onPressed: () async {
                   FocusScope.of(context).requestFocus(FocusNode());
@@ -146,10 +146,10 @@ class _CombatMatchPage extends State<CombatMatchPage> {
           Container(
             height: 80,
             width: 80,
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               shape: BoxShape.circle,
               image: DecorationImage(
-                image: const NetworkImage(
+                image: NetworkImage(
                     'https://images.ctfassets.net/cnu0m8re1exe/6fVCq8MwHs552WbNadncGb/1bd5a233597acb5485c691c8110270b2/shutterstock_710379334.jpg?fm=jpg&fl=progressive&w=660&h=433&fit=fill'),
                 fit: BoxFit.cover,
               ),
@@ -266,7 +266,7 @@ class _CombatMatchPage extends State<CombatMatchPage> {
             actions: [
               SizedBox(
                 width: 100, // Reduzir tamanho do botão Enviar
-                child: BuildGradientButtonWidget(
+                child: ButtonGradient(
                   text: 'Enviar',
                   onPressed: () async {
                     if (sendValues) {
@@ -286,7 +286,7 @@ class _CombatMatchPage extends State<CombatMatchPage> {
               const SizedBox(height: 20),
               SizedBox(
                 width: 100, // Reduzir tamanho do botão Cancelar
-                child: BuildGradientButtonWidget(
+                child: ButtonGradient(
                   text: 'Cancelar',
                   onPressed: () {
                     Navigator.pop(context);
@@ -320,7 +320,7 @@ class _CombatMatchPage extends State<CombatMatchPage> {
     });
 
     final response = await client.put(
-      url: 'http://localhost:5000/matches/${widget.Match.match_id}',
+      url: 'localhost/matches/${widget.Match.match_id}',
       headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer $token'},
       body: body,
     );

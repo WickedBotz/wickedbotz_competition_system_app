@@ -39,7 +39,7 @@ class _CompetitionsPage extends State<CompetitionsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      endDrawer: CustomSidebar(),
+      endDrawer: const CustomSidebar(),
       appBar: AppBar(
         elevation: 10,
         backgroundColor: const Color.fromARGB(255, 26, 26, 26),
@@ -72,9 +72,6 @@ class _CompetitionsPage extends State<CompetitionsPage> {
         ],
       ),
       body: Container(
-        decoration: Theme.of(context)
-            .extension<GradientContainerTheme>()!
-            .gradientDecoration!,
         child: AnimatedBuilder(
           animation: Listenable.merge([
             store.isLoading,

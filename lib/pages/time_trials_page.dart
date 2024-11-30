@@ -1,4 +1,5 @@
 import 'package:app_jurados/data/http/http_client.dart';
+import '../components/SearchField.dart';
 import 'package:app_jurados/pages/stores/category_time_trial_store.dart';
 import 'package:app_jurados/pages/tracking_time_trial_page.dart';
 import 'package:flutter/cupertino.dart';
@@ -11,11 +12,14 @@ import '../data/provider/user_provider.dart';
 import '../data/repository/category_time_trial_repository.dart';
 import 'line_follower_time_trial_page.dart';
 import '../widgets/sidebar_widget.dart';
+// Importação do SearchField
 
 class TimeTrialsPage extends StatefulWidget {
   final CategoriesModel Category;
   final CompetitionsModel Competiotion;
-  const TimeTrialsPage({super.key, required this.Category, required this.Competiotion});
+
+  const TimeTrialsPage(
+      {super.key, required this.Category, required this.Competiotion});
 
   @override
   State<TimeTrialsPage> createState() => _TimeTrialsPage();
@@ -25,7 +29,8 @@ class _TimeTrialsPage extends State<TimeTrialsPage> {
   late CategoryTimeTrialStore store;
   late UserModel user;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  TextEditingController searchController = TextEditingController();
+  final TextEditingController searchController = TextEditingController();
+  final FocusNode focusNode = FocusNode();
   String searchQuery = '';
 
   @override
@@ -42,7 +47,9 @@ class _TimeTrialsPage extends State<TimeTrialsPage> {
 
     store = CategoryTimeTrialStore(
       repository: CategoryTimeTrialRepository(
-        client: HttpClient(), category_id: widget.Category.category_id, token: user.token,
+        client: HttpClient(),
+        category_id: widget.Category.category_id,
+        token: user.token,
       ),
     );
 
@@ -56,10 +63,17 @@ class _TimeTrialsPage extends State<TimeTrialsPage> {
   }
 
   @override
+  void dispose() {
+    focusNode.dispose();
+    searchController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      endDrawer: CustomSidebar(),
+      endDrawer: const CustomSidebar(),
       appBar: AppBar(
         elevation: 10,
         backgroundColor: const Color.fromARGB(255, 26, 26, 26),
@@ -105,36 +119,30 @@ class _TimeTrialsPage extends State<TimeTrialsPage> {
           const SizedBox(height: 20),
           Text(
             'Categoria: ${widget.Category.category_name}',
-            style: const TextStyle(fontSize: 25, color: Colors.white70),
+            style: Theme.of(context).textTheme.labelLarge,
           ),
           Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: TextField(
+            padding: const EdgeInsets.all(17.0),
+            child: SearchField(
               controller: searchController,
-              decoration: InputDecoration(
-                filled: true,
-                fillColor: Colors.grey[800],
-                hintText: 'Nome do robô ou equipe',
-                hintStyle: const TextStyle(fontSize: 16, color: Colors.white54),
-                prefixIcon: const Icon(Icons.search, color: Colors.white54),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide: BorderSide.none,
-                ),
-              ),
-              onChanged: (text) => _onSearchChanged(),
+              focusNode: focusNode,
+              onChanged: _onSearchChanged,
             ),
           ),
           Expanded(
             child: AnimatedBuilder(
-              animation: Listenable.merge([store.isLoading, store.erro, store.state]),
+              animation:
+                  Listenable.merge([store.isLoading, store.erro, store.state]),
               builder: (context, child) {
                 if (store.isLoading.value) {
                   return const Center(child: CircularProgressIndicator());
                 }
                 if (store.erro.value.isNotEmpty) {
                   return Center(
-                    child: Text(store.erro.value),
+                    child: Text(
+                      'Erro: ${store.erro.value}',
+                      style: const TextStyle(color: Colors.red, fontSize: 16),
+                    ),
                   );
                 }
                 if (store.state.value.isEmpty) {
@@ -147,7 +155,8 @@ class _TimeTrialsPage extends State<TimeTrialsPage> {
                 final filteredItems = store.state.value.where((item) {
                   final robotNames = item.robot_name.toLowerCase();
                   final teamNames = item.team_name.toLowerCase();
-                  return robotNames.contains(searchQuery) || teamNames.contains(searchQuery);
+                  return robotNames.contains(searchQuery) ||
+                      teamNames.contains(searchQuery);
                 }).toList();
 
                 if (filteredItems.isEmpty) {
@@ -171,7 +180,8 @@ class _TimeTrialsPage extends State<TimeTrialsPage> {
                       itemBuilder: (_, index) {
                         final item = filteredItems[index];
                         return ListTile(
-                          contentPadding: const EdgeInsets.symmetric(vertical: 8.0),
+                          contentPadding:
+                              const EdgeInsets.symmetric(vertical: 8.0),
                           title: Text(
                             item.robot_name,
                             style: const TextStyle(
@@ -188,13 +198,17 @@ class _TimeTrialsPage extends State<TimeTrialsPage> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => LineFollowerTimeTrialPage(
+                                  builder: (context) =>
+                                      LineFollowerTimeTrialPage(
                                     timeTrial: item,
                                     Competiotion: widget.Competiotion,
                                     Category: widget.Category,
                                   ),
                                 ),
-                              );
+                              ).then((_) {
+                                store.getRobotsTimeTrial(
+                                    category_id: widget.Category.category_id);
+                              });
                             }
                             if (widget.Category.category_id == 4) {
                               Navigator.push(
@@ -206,7 +220,10 @@ class _TimeTrialsPage extends State<TimeTrialsPage> {
                                     Category: widget.Category,
                                   ),
                                 ),
-                              );
+                              ).then((_) {
+                                store.getRobotsTimeTrial(
+                                    category_id: widget.Category.category_id);
+                              });
                             }
                           },
                         );

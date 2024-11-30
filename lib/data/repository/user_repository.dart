@@ -19,7 +19,7 @@ class UserRepository implements IUserRepository {
 
     // Faz a requisição POST com o corpo e cabeçalho adequado
     final response = await client.post(
-      url: 'http://localhost:5000/login',
+      url: 'localhost/login',
       headers: {'Content-Type': 'application/json'},
       body: body,
     );

@@ -10,7 +10,7 @@ void main() {
   runApp(
     ChangeNotifierProvider(
       create: (_) => UserProvider(), // Cria uma instância do UserProvider
-      child: MyApp(),
+      child: const MyApp(),
     ),
   );
 }
@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: AppTheme.mainTheme,
-      home: SplashScreen(),
+      home: const SplashScreen(),
       debugShowCheckedModeBanner: false,
     );
   }
@@ -66,7 +66,7 @@ class _SplashScreenState extends State<SplashScreen> {
             // Redireciona para LoginPage se o token for inválido
             Future.microtask(() {
               Navigator.pushReplacement(
-                  context, MaterialPageRoute(builder: (context) => LoginPage()));
+                  context, MaterialPageRoute(builder: (context) => const LoginPage()));
             });
           }
           // Retorna um widget vazio enquanto a navegação ocorre

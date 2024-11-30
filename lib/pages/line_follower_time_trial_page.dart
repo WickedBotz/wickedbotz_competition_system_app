@@ -1,4 +1,12 @@
 import 'dart:convert';
+import 'package:app_jurados/components/RobotInfoCard.dart';
+
+import '../components/ButtonGradient.dart';
+import '../components/ConfirmDialog.dart';
+import '../components/RecordTimeItem.dart';
+import '../components/TimeInputField.dart';
+import '../components/TruncateText.dart';
+import 'package:app_jurados/themes/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -8,7 +16,6 @@ import '../data/models/categoties_model.dart';
 import '../data/models/competitions_model.dart';
 import '../data/models/user_model.dart';
 import '../data/provider/user_provider.dart';
-import '../widgets/gradient_button_widget.dart';
 import '../widgets/sidebar_widget.dart';
 
 class LineFollowerTimeTrialPage extends StatefulWidget {
@@ -16,10 +23,15 @@ class LineFollowerTimeTrialPage extends StatefulWidget {
   final CompetitionsModel Competiotion;
   final CategoriesModel Category;
 
-  const LineFollowerTimeTrialPage({super.key, required this.timeTrial, required this.Competiotion, required this.Category});
+  const LineFollowerTimeTrialPage(
+      {super.key,
+      required this.timeTrial,
+      required this.Competiotion,
+      required this.Category});
 
   @override
-  State<LineFollowerTimeTrialPage> createState() => _LineFollowerTimeTrialPage();
+  State<LineFollowerTimeTrialPage> createState() =>
+      _LineFollowerTimeTrialPage();
 }
 
 class _LineFollowerTimeTrialPage extends State<LineFollowerTimeTrialPage> {
@@ -29,6 +41,7 @@ class _LineFollowerTimeTrialPage extends State<LineFollowerTimeTrialPage> {
   final TextEditingController timeTrialController = TextEditingController();
   bool isValidTimeTrial = false;
   List<Map<String, dynamic>> recordedTimes = [];
+  
 
   @override
   void initState() {
@@ -41,7 +54,7 @@ class _LineFollowerTimeTrialPage extends State<LineFollowerTimeTrialPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      endDrawer: CustomSidebar(),
+      endDrawer: const CustomSidebar(),
       appBar: buildAppBar(context, _scaffoldKey),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(10),
@@ -55,7 +68,7 @@ class _LineFollowerTimeTrialPage extends State<LineFollowerTimeTrialPage> {
               const SizedBox(height: 20),
               ...buildRecordedTimes(),
               const SizedBox(height: 20),
-              recordedTimes.length == 3 ? buildSendButton() : Container(),
+              buildSendButton(), // Sempre exibe o botão
             ],
           ),
         ),
@@ -63,7 +76,8 @@ class _LineFollowerTimeTrialPage extends State<LineFollowerTimeTrialPage> {
     );
   }
 
-  AppBar buildAppBar(BuildContext context, GlobalKey<ScaffoldState> scaffoldKey) {
+  AppBar buildAppBar(
+      BuildContext context, GlobalKey<ScaffoldState> scaffoldKey) {
     return AppBar(
       elevation: 10,
       backgroundColor: const Color.fromARGB(255, 26, 26, 26),
@@ -107,91 +121,31 @@ class _LineFollowerTimeTrialPage extends State<LineFollowerTimeTrialPage> {
   }
 
   Widget buildInfoContainer() {
-    return Container(
-      padding: const EdgeInsets.all(16.0),
-      margin: const EdgeInsets.symmetric(vertical: 8.0),
-      decoration: BoxDecoration(
-        color: Colors.grey[800],
-        borderRadius: BorderRadius.circular(12.0),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            'Robô: ${widget.timeTrial.robot_name}',
-            style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 10),
-          Text(
-            'Equipe: ${widget.timeTrial.team_name}',
-            style: const TextStyle(color: Colors.white, fontSize: 14),
-          ),
-          const SizedBox(height: 20),
-          Container(
-            height: 100.0,
-            width: 100.0,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              image: const DecorationImage(
-                image: NetworkImage(
-                    'https://images.ctfassets.net/cnu0m8re1exe/6fVCq8MwHs552WbNadncGb/1bd5a233597acb5485c691c8110270b2/shutterstock_710379334.jpg?fm=jpg&fl=progressive&w=660&h=433&fit=fill'),
-                fit: BoxFit.cover,
-              ),
-              border: Border.all(color: Colors.grey.shade900),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+  return RobotInfoCard(
+    robotName: widget.timeTrial.robot_name,
+    imageUrl:
+        'https://images.ctfassets.net/cnu0m8re1exe/6fVCq8MwHs552WbNadncGb/1bd5a233597acb5485c691c8110270b2/shutterstock_710379334.jpg?fm=jpg&fl=progressive&w=660&h=433&fit=fill',
+  );
+}
+
 
   Widget buildTimeTrialFields() {
     return recordedTimes.length < 3
-        ? Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: TextFormField(
-                  controller: timeTrialController,
-                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                  inputFormatters: [
-                    FilteringTextInputFormatter.allow(RegExp(r'^[0-9.]*$')),
-                  ],
-                  cursorColor: Colors.grey,  // Cursor de escrita em cinza
-                  decoration: InputDecoration(
-                    filled: true,
-                    fillColor: Colors.grey[800],
-                    icon: const Icon(Icons.timer_outlined, color: Colors.white70),
-                    hintText: '00:00:00',
-                    hintStyle: const TextStyle(fontSize: 16, color: Colors.white54),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide.none,
-                    ),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Campo obrigatório';
-                    }
-                    return null;
-                  },
-                ),
-              ),
-              IconButton(
-                onPressed: () {
-                  if (_formKey.currentState!.validate() && recordedTimes.length < 3) {
-                    setState(() {
-                      recordedTimes.add({
-                        'time': timeTrialController.text,
-                        'isValid': isValidTimeTrial,
-                      });
-                      timeTrialController.clear();
-                    });
-                  }
-                },
-                icon: const Icon(Icons.add, color: Colors.white),
-              ),
-            ],
+        ? TimeInputField(
+            controller: timeTrialController,
+            isEnabled: recordedTimes.length < 3,
+            onAddTime: () {
+              if (_formKey.currentState!.validate() &&
+                  recordedTimes.length < 3) {
+                setState(() {
+                  recordedTimes.add({
+                    'time': timeTrialController.text,
+                    'isValid': isValidTimeTrial,
+                  });
+                  timeTrialController.clear(); // Limpa o campo após adicionar
+                });
+              }
+            },
           )
         : Container();
   }
@@ -201,124 +155,64 @@ class _LineFollowerTimeTrialPage extends State<LineFollowerTimeTrialPage> {
       final index = entry.key;
       final item = entry.value;
 
-      return Container(
-        margin: const EdgeInsets.symmetric(vertical: 8.0),
-        padding: const EdgeInsets.all(16.0),
-        decoration: BoxDecoration(
-          color: Colors.grey[800],
-          borderRadius: BorderRadius.circular(12.0),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              'Tempo: ${item['time']}',
-              style: const TextStyle(color: Colors.white, fontSize: 16),
-            ),
-            Row(
-              children: [
-                IconButton(
-                  icon: const Icon(Icons.edit, color: Colors.orangeAccent),
-                  onPressed: () {
-                    timeTrialController.text = item['time'];
-                    setState(() {
-                      recordedTimes.removeAt(index);
-                    });
-                  },
-                ),
-                const Icon(Icons.check_circle, color: Colors.green),
-              ],
-            ),
-          ],
-        ),
+      return RecordedTimeItem(
+        time: item['time'],
+        isValid: item['isValid'],
+        onEdit: () {
+          timeTrialController.text = item['time'];
+          setState(() {
+            recordedTimes.removeAt(index);
+          });
+        },
       );
     }).toList();
   }
 
   Widget buildSendButton() {
-    return ElevatedButton(
-      onPressed: () async {
-        _showConfirmationDialog();
-      },
-      style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.blueAccent,
-        padding: const EdgeInsets.symmetric(horizontal: 40.0, vertical: 16.0),
-        textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8.0), // Deixa o botão menos arredondado
-        ),
-      ),
-      child: const Text(
-        'Enviar Tempos',
-        style: TextStyle(color: Colors.white),
-      ),
-    );
-  }
+  final bool isEnabled =
+      recordedTimes.length == 3; // Botão habilitado quando há 3 itens
 
-  Future<void> _showConfirmationDialog() async {
-    bool confirmSend = false;
+  return Align(
+    alignment: Alignment.bottomCenter, // Posiciona o botão no centro inferior
+    child: Container(
+      width: 280, // Define a largura do botão
+      padding: const EdgeInsets.symmetric(vertical: 10.0),
+      child: ButtonGradient(
+        text: 'Enviar Tempos',
+        onPressed: isEnabled
+            ? () {
+                _showConfirmationDialog();
+              }
+            : null,
+        isEnabled: isEnabled,
+        gradient: AppTheme.enviarGradient,
+      ),
+    ),
+  );
+}
 
-    return showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return StatefulBuilder(
-          builder: (context, setState) => AlertDialog(
-            title: const Text('Confirmar envio dos tempos?'),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                for (var entry in recordedTimes)
-                  Column(
-                    children: [
-                      Text('Tempo: ${entry['time']}'),
-                      const SizedBox(height: 10),
-                    ],
-                  ),
-                Row(
-                  children: [
-                    Checkbox(
-                      value: confirmSend,
-                      activeColor: Colors.green,
-                      onChanged: (value) => setState(() => confirmSend = value!),
-                    ),
-                    const Text('Confirmar'),
-                  ],
-                ),
-              ],
-            ),
-            actions: [
-              BuildGradientButtonWidget(
-                text: 'Enviar',
-                onPressed: () {
-                  if (confirmSend) {
-                    sendAllTimes();
-                    Navigator.pop(context);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Dados enviados com sucesso')),
-                    );
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Confirme os valores')),
-                    );
-                  }
-                },
-              ),
-              const SizedBox(height: 10),
-              BuildGradientButtonWidget(
-                text: 'Cancelar',
-                onPressed: () {
-                  Navigator.pop(context);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Envio cancelado')),
-                  );
-                },
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
+
+  _showConfirmationDialog() {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return ConfirmationDialog(
+        recordedTimes: recordedTimes, // Passa a lista de tempos
+        onConfirm: () async {
+          await sendAllTimes();
+          Navigator.pop(context);
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Tempos enviados com sucesso')),
+          );
+        },
+        onCancel: () {
+          Navigator.pop(context);
+        },
+      );
+    },
+  );
+}
+
 
   Future<void> sendAllTimes() async {
     final token = user.token;
@@ -334,8 +228,12 @@ class _LineFollowerTimeTrialPage extends State<LineFollowerTimeTrialPage> {
       });
 
       await client.post(
-        url: 'http://localhost:5000/time_trials',
-        headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer $token'},
+        url:
+            'https://21a3-2804-30c-1806-a800-91b0-26ab-5791-fc1b.ngrok-free.app/time_trials',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
+        },
         body: body,
       );
     }
