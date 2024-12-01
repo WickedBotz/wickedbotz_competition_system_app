@@ -49,7 +49,7 @@ class _CompetitionsPage extends State<CompetitionsPage> {
             borderRadius: BorderRadius.circular(50),
             border: Border.all(color: Colors.grey.shade900),
             image: const DecorationImage(
-              image: AssetImage('image-removebg-preview.png'),
+              image: AssetImage('assets/images/image-removebg-preview.png'),
               scale: 2.5,
               fit: BoxFit.cover,
             ),

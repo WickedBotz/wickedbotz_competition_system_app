@@ -73,7 +73,7 @@ class _LoginPageState extends State<LoginPage> {
               decoration: const BoxDecoration(shape: BoxShape.circle),
               child: ClipOval(
                 child: Image.asset(
-                  'image-removebg-preview.png',
+                  'assets/images/image-removebg-preview.png',
                   fit: BoxFit.cover,
                 ),
               ),
