@@ -19,7 +19,7 @@ class UserRepository implements IUserRepository {
 
     // Faz a requisição POST com o corpo e cabeçalho adequado
     final response = await client.post(
-      url: 'localhost/login',
+      url: 'https://035f-2804-30c-1806-a800-91b0-26ab-5791-fc1b.ngrok-free.app/login',
       headers: {'Content-Type': 'application/json'},
       body: body,
     );

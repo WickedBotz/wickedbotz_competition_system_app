@@ -43,7 +43,7 @@ class ConfirmationDialog extends StatelessWidget {
               (entry) => Padding(
                 padding: const EdgeInsets.symmetric(vertical: 5.0),
                 child: Text(
-                  'Tempo: ${entry['time']}',
+                  '${entry['time']}',
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
               ),

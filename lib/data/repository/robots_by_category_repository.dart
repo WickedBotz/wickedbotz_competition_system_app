@@ -17,7 +17,7 @@ class RobotsByCategoryRepository implements IRobotByCategoryRepository{
   Future<List<RobotsByCategoryModel>> getRobotsByCategory({required int category_id}) async{
     print('Categori ID: $category_id');
     final response = await client.get(
-        url: 'localhost/robots/$category_id',
+        url: 'https://035f-2804-30c-1806-a800-91b0-26ab-5791-fc1b.ngrok-free.app/robots/$category_id',
       headers: token != null ? {'Authorization': 'Bearer $token'} : null,
     );
 

@@ -5,7 +5,6 @@ import '../components/ButtonGradient.dart';
 import '../components/ConfirmDialog.dart';
 import '../components/RecordTimeItem.dart';
 import '../components/TimeInputField.dart';
-import '../components/TruncateText.dart';
 import 'package:app_jurados/themes/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -134,6 +133,8 @@ class _LineFollowerTimeTrialPage extends State<LineFollowerTimeTrialPage> {
         ? TimeInputField(
             controller: timeTrialController,
             isEnabled: recordedTimes.length < 3,
+            showAddIcon: true,
+            showTimerIcon: true,
             onAddTime: () {
               if (_formKey.currentState!.validate() &&
                   recordedTimes.length < 3) {

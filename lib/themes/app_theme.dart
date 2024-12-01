@@ -42,6 +42,11 @@ class AppTheme {
     );
   }
 
+// Cor para "enviar" - Azul
+  static Color get enviarBorda {
+    return Colors.blue; // Borda azul
+  }
+
   // Cor para "cancelar" - Vermelho
   static Color get cancelarBorda {
     return Colors.red; // Borda vermelha

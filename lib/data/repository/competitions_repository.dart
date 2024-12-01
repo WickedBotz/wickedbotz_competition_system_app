@@ -22,7 +22,7 @@ class CompetitionsRepository implements ICompetitionsRepository {
 
     print('Token: $token');
     final response = await client.get(
-      url: 'localhost/competitions',
+      url: 'https://035f-2804-30c-1806-a800-91b0-26ab-5791-fc1b.ngrok-free.app/competitions',
       headers: token != null ? {'Authorization': 'Bearer $token'} : null,
     );
 

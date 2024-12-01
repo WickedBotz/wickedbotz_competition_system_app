@@ -6,6 +6,7 @@ class ButtonGradient extends StatelessWidget {
   final VoidCallback? onPressed;
   final Gradient? gradient;
   final bool isEnabled;
+  final double? width;
 
   const ButtonGradient({
     Key? key,
@@ -13,6 +14,7 @@ class ButtonGradient extends StatelessWidget {
     required this.onPressed,
     this.gradient,
     this.isEnabled = true,
+    this.width
   }) : super(key: key);
 
   @override
@@ -33,7 +35,7 @@ class ButtonGradient extends StatelessWidget {
     return GestureDetector(
       onTap: isEnabled ? onPressed : null,
       child: Container(
-        width: double.infinity,
+        width: width ?? double.infinity,
         height: 50,
         decoration: BoxDecoration(
           gradient: buttonGradient,

@@ -289,7 +289,7 @@ _showConfirmationDialog() {
 
     final response = await client.put(
       url:
-          'localhost/matches/${widget.Match.match_id}',
+          'https://035f-2804-30c-1806-a800-91b0-26ab-5791-fc1b.ngrok-free.app/matches/${widget.Match.match_id}',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token'
