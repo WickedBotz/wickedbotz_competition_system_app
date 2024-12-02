@@ -5,7 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../components/ButtonGradient.dart';
-import '../components/CombatContainer.dart';
+import '../components/CombatContainerLandscape.dart';
+import '../components/CombatContainerPortrait.dart';
 import '../data/env/env.dart';
 import '../data/http/http_client.dart';
 import '../data/models/category_match_model.dart';
@@ -49,6 +50,8 @@ class _CombatMatchPage extends State<CombatMatchPage> {
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.landscapeRight,
       DeviceOrientation.landscapeLeft,
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
     ]);
   }
 
@@ -64,84 +67,160 @@ class _CombatMatchPage extends State<CombatMatchPage> {
 
   @override
   Widget build(BuildContext context) {
+    final orientation = MediaQuery.of(context).orientation;
     return Scaffold(
       key: _scaffoldKey,
       endDrawer: const CustomSidebar(),
-      appBar: buildAppBar(context, _scaffoldKey),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(10),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  CombatContainer(
-                    robotName: widget.Match.robot_1_name,
-                    teamName: widget.Match.team_1_name,
-                    controller: robot1Controller,
-                    backgroundColor: AppTheme.cancelarFundo,
-                    borderColor: AppTheme.enviarBorda,
-                    onIncrement: () {
-                      setState(() {
-                        int currentValue =
-                            int.tryParse(robot1Controller.text) ?? 0;
-                        robot1Controller.text = (currentValue + 1).toString();
-                      });
-                    },
-                    onDecrement: () {
-                      setState(() {
-                        int currentValue =
-                            int.tryParse(robot1Controller.text) ?? 0;
-                        if (currentValue > 0) {
-                          robot1Controller.text = (currentValue - 1).toString();
-                        }
-                      });
-                    },
-                  ),
-                  CombatContainer(
-                    robotName: widget.Match.robot_2_name,
-                    teamName: widget.Match.team_2_name,
-                    controller: robot2Controller,
-                    borderColor: AppTheme.cancelarBorda,
-                    onIncrement: () {
-                      setState(() {
-                        int currentValue =
-                            int.tryParse(robot2Controller.text) ?? 0;
-                        robot2Controller.text = (currentValue + 1).toString();
-                      });
-                    },
-                    onDecrement: () {
-                      setState(() {
-                        int currentValue =
-                            int.tryParse(robot2Controller.text) ?? 0;
-                        if (currentValue > 0) {
-                          robot2Controller.text = (currentValue - 1).toString();
-                        }
-                      });
-                    },
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20),
-              ButtonGradient(
-                text: 'Enviar',
-                width: 730,
-                onPressed: () async {
-                  FocusScope.of(context).requestFocus(FocusNode());
-                  if (_formKey.currentState!.validate()) {
-                    _showConfirmationDialog();
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Formulário Inválido')),
-                    );
+      appBar: orientation == Orientation.portrait
+          ? buildAppBar(context, _scaffoldKey)
+          : null, // Oculta o AppBar no modo landscape
+      body: orientation == Orientation.portrait
+          ? viewModePortrait()
+          : viewModeLandscape(),
+    );
+  }
+
+  Widget viewModePortrait() {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(10),
+      child: Form(
+        key: _formKey,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const SizedBox(height: 20),
+            CombatContainerPortrait(
+              robotName: widget.Match.robot_1_name,
+              teamName: widget.Match.team_1_name,
+              controller: robot1Controller,
+              backgroundColor: AppTheme.cancelarFundo,
+              borderColor: AppTheme.enviarBorda,
+              onIncrement: () {
+                setState(() {
+                  int currentValue = int.tryParse(robot1Controller.text) ?? 0;
+                  robot1Controller.text = (currentValue + 1).toString();
+                });
+              },
+              onDecrement: () {
+                setState(() {
+                  int currentValue = int.tryParse(robot1Controller.text) ?? 0;
+                  if (currentValue > 0) {
+                    robot1Controller.text = (currentValue - 1).toString();
                   }
-                },
+                });
+              },
+            ),
+            const SizedBox(height: 20),
+            CombatContainerPortrait(
+              robotName: widget.Match.robot_2_name,
+              teamName: widget.Match.team_2_name,
+              controller: robot2Controller,
+              borderColor: AppTheme.cancelarBorda,
+              onIncrement: () {
+                setState(() {
+                  int currentValue = int.tryParse(robot2Controller.text) ?? 0;
+                  robot2Controller.text = (currentValue + 1).toString();
+                });
+              },
+              onDecrement: () {
+                setState(() {
+                  int currentValue = int.tryParse(robot2Controller.text) ?? 0;
+                  if (currentValue > 0) {
+                    robot2Controller.text = (currentValue - 1).toString();
+                  }
+                });
+              },
+            ),
+            const SizedBox(height: 20),
+            Align(
+              alignment: Alignment
+                  .bottomCenter, // Posiciona o botão no centro inferior
+              child: Container(
+                width: 280, // Define a largura do botão
+                padding: const EdgeInsets.symmetric(vertical: 10.0),
+                child: ButtonGradient(
+                  text: 'Enviar',
+                  width: MediaQuery.of(context).size.width * 0.8,
+                  onPressed: () async {
+                    FocusScope.of(context).requestFocus(FocusNode());
+                    if (_formKey.currentState!.validate()) {
+                      _showConfirmationDialog();
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Formulário Inválido')),
+                      );
+                    }
+                  },
+                ),
               ),
-              const SizedBox(height: 20),
-            ],
-          ),
+            ),
+            const SizedBox(height: 20),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget viewModeLandscape() {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(10),
+      child: Form(
+        key: _formKey,
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                CombatContainerLandscape(
+                  robotName: widget.Match.robot_1_name,
+                  teamName: widget.Match.team_1_name,
+                  controller: robot1Controller,
+                  backgroundColor: AppTheme.cancelarFundo,
+                  borderColor: AppTheme.enviarBorda,
+                  onIncrement: () {
+                    setState(() {
+                      int currentValue =
+                          int.tryParse(robot1Controller.text) ?? 0;
+                      robot1Controller.text = (currentValue + 1).toString();
+                    });
+                  },
+                  onDecrement: () {
+                    setState(() {
+                      int currentValue =
+                          int.tryParse(robot1Controller.text) ?? 0;
+                      if (currentValue > 0) {
+                        robot1Controller.text = (currentValue - 1).toString();
+                      }
+                    });
+                  },
+                ),
+                CombatContainerLandscape(
+                  robotName: widget.Match.robot_2_name,
+                  teamName: widget.Match.team_2_name,
+                  controller: robot2Controller,
+                  borderColor: AppTheme.cancelarBorda,
+                  onIncrement: () {
+                    setState(() {
+                      int currentValue =
+                          int.tryParse(robot2Controller.text) ?? 0;
+                      robot2Controller.text = (currentValue + 1).toString();
+                    });
+                  },
+                  onDecrement: () {
+                    setState(() {
+                      int currentValue =
+                          int.tryParse(robot2Controller.text) ?? 0;
+                      if (currentValue > 0) {
+                        robot2Controller.text = (currentValue - 1).toString();
+                      }
+                    });
+                  },
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+          ],
         ),
       ),
     );

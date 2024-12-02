@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-class CombatContainer extends StatelessWidget {
+class CombatContainerPortrait extends StatelessWidget {
   final String robotName;
   final String teamName;
   final TextEditingController controller;
@@ -11,7 +11,7 @@ class CombatContainer extends StatelessWidget {
   final Color? backgroundColor; // Cor de fundo sólida
   final Gradient? backgroundGradient; // Gradiente opcional
 
-  const CombatContainer({
+  const CombatContainerPortrait({
     Key? key,
     required this.robotName,
     required this.teamName,
@@ -28,7 +28,7 @@ class CombatContainer extends StatelessWidget {
     final screenWidth = MediaQuery.of(context).size.width; // Largura da tela
 
     return Container(
-      width: screenWidth * 0.45, // Define largura proporcional à tela
+      width: screenWidth * 0.8, // Define largura proporcional à tela
       padding: const EdgeInsets.all(10),
       margin: const EdgeInsets.symmetric(horizontal: 5),
       decoration: BoxDecoration(
@@ -58,8 +58,8 @@ class CombatContainer extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           Container(
-            height: 60,
-            width: 60,
+            height: 80,
+            width: 80,
             decoration: const BoxDecoration(
               shape: BoxShape.circle,
               image: DecorationImage(
