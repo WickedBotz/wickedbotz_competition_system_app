@@ -1,5 +1,6 @@
 import 'package:app_jurados/data/http/http_client.dart';
 import 'package:app_jurados/data/repository/category_match_repository.dart';
+import '../components/SearchField.dart';
 import 'package:app_jurados/pages/pursuit_race_page.dart';
 import 'package:app_jurados/pages/stores/category_match_store.dart';
 import 'package:flutter/cupertino.dart';
@@ -27,6 +28,7 @@ class _MatchsPage extends State<MatchsPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   TextEditingController searchController = TextEditingController();
   String searchQuery = '';
+  final FocusNode focusNode = FocusNode();
 
   @override
   void initState() {
@@ -59,7 +61,7 @@ class _MatchsPage extends State<MatchsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      endDrawer: CustomSidebar(),
+      endDrawer: const CustomSidebar(),
       appBar: AppBar(
         elevation: 10,
         backgroundColor: const Color.fromARGB(255, 26, 26, 26),
@@ -105,24 +107,14 @@ class _MatchsPage extends State<MatchsPage> {
           const SizedBox(height: 20),
           Text(
             'Categoria: ${widget.Category.category_name}',
-            style: const TextStyle(fontSize: 25, color: Colors.white70),
+            style: Theme.of(context).textTheme.labelLarge,
           ),
           Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: TextField(
+            padding: const EdgeInsets.all(17.0),
+            child: SearchField(
               controller: searchController,
-              decoration: InputDecoration(
-                filled: true,
-                fillColor: Colors.grey[800],
-                hintText: 'Nome do robô ou equipe',
-                hintStyle: const TextStyle(fontSize: 16, color: Colors.white54),
-                prefixIcon: const Icon(Icons.search, color: Colors.white54),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide: BorderSide.none,
-                ),
-              ),
-              onChanged: (text) => _onSearchChanged(),
+              focusNode: focusNode,
+              onChanged: _onSearchChanged,
             ),
           ),
           Expanded(
@@ -177,7 +169,9 @@ class _MatchsPage extends State<MatchsPage> {
                                     Category: widget.Category,
                                   ),
                                 ),
-                              );
+                              ).then((_) {
+                                store.getRobotsMatch(category_id: widget.Category.category_id);
+                              });
                             } else {
                               Navigator.push(
                                 context,
@@ -188,7 +182,9 @@ class _MatchsPage extends State<MatchsPage> {
                                     Category: widget.Category,
                                   ),
                                 ),
-                              );
+                              ).then((_) {
+                                store.getRobotsMatch(category_id: widget.Category.category_id);
+                              });
                             }
                           },
                           child: Container(
@@ -212,9 +208,9 @@ class _MatchsPage extends State<MatchsPage> {
                                           fontSize: 16,
                                         ),
                                       ),
-                                      SizedBox(height: 3),
-                                      Divider(color: Colors.white54, height: 1),
-                                      SizedBox(height: 3),
+                                      const SizedBox(height: 3),
+                                      const Divider(color: Colors.white54, height: 1),
+                                      const SizedBox(height: 3),
                                       Text(
                                         item.robot_2_name,
                                         style: const TextStyle(

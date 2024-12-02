@@ -36,7 +36,7 @@ Widget CompetitionItemWidget({
                 child: Image.network(
                   'https://images.ctfassets.net/cnu0m8re1exe/6fVCq8MwHs552WbNadncGb/1bd5a233597acb5485c691c8110270b2/shutterstock_710379334.jpg?fm=jpg&fl=progressive&w=660&h=433&fit=fill',
                   width: double.infinity, // Ocupa toda a largura disponível
-                  height: 300, // Defina a altura que preferir
+                  height: 265, // Defina a altura que preferir
                   fit: BoxFit.cover,
                 ),
               ),

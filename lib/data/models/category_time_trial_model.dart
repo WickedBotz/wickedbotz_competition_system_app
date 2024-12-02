@@ -2,25 +2,31 @@ class CategoryTimeTrialModel {
 
   final String robot_name;
   final String team_name;
-  final int robot_id;
-  final int team_id;
+  final double time1;
+  final double time2;
+  final double time3;
+  final int id;
 
 
   CategoryTimeTrialModel(
       {
         required this.robot_name,
         required this.team_name,
-        required this.robot_id,
-        required this.team_id
+        required this.time1,
+        required this.time2,
+        required this.time3,
+        required this.id
       });
 
   factory CategoryTimeTrialModel.fromMap(Map<String, dynamic> map) {
 
     return CategoryTimeTrialModel(
-        robot_name: map['name'],
+        robot_name: map['robot_name'],
         team_name: map['team_name'],
-        robot_id: map['id'],
-        team_id: map['team_id']
+        time1: map['time1'] ?? 0.0,
+        time2: map['time2'] ?? 0.0,
+        time3: map['time3'] ?? 0.0,
+        id: map['id']
     );
   }
 }

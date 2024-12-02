@@ -1,4 +1,5 @@
 import 'dart:convert';
+import '../env/env.dart';
 import '../http/exceptions.dart';
 import '../http/http_client.dart';
 import '../models/robots_by_category_model.dart';
@@ -17,7 +18,7 @@ class RobotsByCategoryRepository implements IRobotByCategoryRepository{
   Future<List<RobotsByCategoryModel>> getRobotsByCategory({required int category_id}) async{
     print('Categori ID: $category_id');
     final response = await client.get(
-        url: 'http://192.168.0.37:5000/robots/$category_id',
+        url: '${Env.API_URL}/robots/$category_id',
       headers: token != null ? {'Authorization': 'Bearer $token'} : null,
     );
 

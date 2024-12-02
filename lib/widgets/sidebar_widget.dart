@@ -39,15 +39,12 @@ class CustomSidebar extends StatelessWidget {
                   const SizedBox(height: 8),
                   Text(
                     'Avaliador',
-                    style: TextStyle(
-                      color: Colors.grey.shade400,
-                      fontSize: 14,
-                    ),
+                    style: Theme.of(context).textTheme.titleSmall,
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    '${user?.name ?? 'Usuário'}',
-                    style: TextStyle(
+                    user?.name ?? 'Usuário',
+                    style: const TextStyle(
                       color: Colors.white,
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -55,7 +52,7 @@ class CustomSidebar extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    '${user?.email ?? 'teste@teste.com'}',
+                    user?.email ?? 'teste@teste.com',
                     style: TextStyle(
                       color: Colors.grey.shade400,
                       fontSize: 14,
@@ -105,7 +102,7 @@ class CustomSidebar extends StatelessWidget {
                   Navigator.of(context).pop();
                   // Navigate back to LoginPage
                   Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(builder: (context) => LoginPage()),
+                    MaterialPageRoute(builder: (context) => const LoginPage()),
                   );
                 },
                 child: const Row(
@@ -175,10 +172,7 @@ class SidebarItem extends StatelessWidget {
         ),
         title: Text(
           label,
-          style: TextStyle(
-            color: selected ? Colors.white : Colors.grey.shade400,
-            fontWeight: FontWeight.w500,
-          ),
+          style: Theme.of(context).textTheme.titleSmall,
         ),
         onTap: onTap ??
             () {
@@ -188,3 +182,4 @@ class SidebarItem extends StatelessWidget {
     );
   }
 }
+

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:app_jurados/data/http/http_client.dart';
 import 'package:app_jurados/data/models/competitions_model.dart';
 
+import '../env/env.dart';
 import '../http/exceptions.dart';
 
 abstract class ICompetitionsRepository{
@@ -22,7 +23,7 @@ class CompetitionsRepository implements ICompetitionsRepository {
 
     print('Token: $token');
     final response = await client.get(
-      url: 'http://192.168.0.37:5000/competitions',
+      url: '${Env.API_URL}/competitions',
       headers: token != null ? {'Authorization': 'Bearer $token'} : null,
     );
 

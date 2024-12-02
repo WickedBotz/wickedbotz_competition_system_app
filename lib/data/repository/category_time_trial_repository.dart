@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import 'package:shared_preferences/shared_preferences.dart';
 
+import '../env/env.dart';
 import '../http/exceptions.dart';
 import '../http/http_client.dart';
 import '../models/category_time_trial_model.dart';
@@ -20,7 +20,7 @@ class CategoryTimeTrialRepository implements ICategoryTimeTrialRepository {
   Future<List<CategoryTimeTrialModel>> getRobotsTimeTrial({required int category_id}) async {
 
     final response = await client.get(
-      url: 'http://192.168.0.37:5000/robots/category/$category_id',
+      url: '${Env.API_URL}/time_trials/$category_id',
       headers: token != null ? {'Authorization': 'Bearer $token'} : null, // Adiciona o token se não for nulo
     );
 
@@ -37,7 +37,7 @@ class CategoryTimeTrialRepository implements ICategoryTimeTrialRepository {
 
       return timeTrials;
     } else if (response.statusCode == 404) {
-      throw NotFoundException('Erro ao interpretar resposta');
+      throw NotFoundException('Erro 404');
     } else {
       throw Exception('Erro ...');
     }

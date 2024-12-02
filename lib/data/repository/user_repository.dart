@@ -1,4 +1,5 @@
 import 'dart:convert';
+import '../env/env.dart';
 import '../http/exceptions.dart';
 import '../http/http_client.dart';
 import '../models/user_model.dart';
@@ -19,7 +20,7 @@ class UserRepository implements IUserRepository {
 
     // Faz a requisição POST com o corpo e cabeçalho adequado
     final response = await client.post(
-      url: 'http://192.168.0.37:5000/login',
+      url: '${Env.API_URL}/login',
       headers: {'Content-Type': 'application/json'},
       body: body,
     );
